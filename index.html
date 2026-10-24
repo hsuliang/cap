@@ -1,2702 +1,971 @@
 <!DOCTYPE html>
-<html lang="zh-Hant-TW">
-
+<html lang="zh-TW">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light">
-  <title>AI × 國中素養命題與互動教材實戰｜教師研習一頁式操作講義</title>
-  <meta name="description" content="免費版 Gemini 教師研習講義：Prompt 0–8 完整操作提示詞、附件提醒、一鍵複製與教師檢核。">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>會考素養題，AI 來出招！｜國中素養導向命題工作流</title>
+  
+  <!-- Favicon using Aliang250.png -->
+  <link rel="icon" type="image/png" href="Aliang250.png">
+  
+    <!-- Theme initializer (default light) -->
+  <script>
+    try {
+      const savedTheme = localStorage.getItem("cap_workflow_theme");
+      if (savedTheme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    } catch (e) {}
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans TC"', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#f0fdfa',
+              100: '#ccfbf1',
+              200: '#99f6e4',
+              300: '#5eead4',
+              400: '#2dd4bf',
+              500: '#14b8a6',
+              600: '#0d9488',
+              700: '#0f766e',
+              800: '#115e59',
+              900: '#134e4a',
+              950: '#042f2e',
+            },
+            neon: {
+              cyan: '#06b6d4',
+              blue: '#3b82f6',
+              purple: '#a855f7',
+              pink: '#ec4899',
+              amber: '#f59e0b',
+              emerald: '#10b981',
+            }
+          },
+          boxShadow: {
+            'neon-cyan': '0 0 20px -3px rgba(6, 182, 212, 0.45)',
+            'neon-emerald': '0 0 20px -3px rgba(16, 185, 129, 0.45)',
+            'neon-purple': '0 0 25px -4px rgba(168, 85, 247, 0.45)',
+            'inner-glow': 'inset 0 1px 1px 0 rgba(255, 255, 255, 0.15)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Alpine.js CDN -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
   <style>
-    :root {
-      --ink: #183043;
-      --slate: #4a6171;
-      --muted: #758695;
-      --brand: #2356a0;
-      --brand2: #174679;
-      --mint: #dff4ec;
-      --jade: #168868;
-      --bg: #f5f7f8;
-      --white: #fff;
-      --line: #e0e8eb;
-      --surface: #f7fafb;
-      --yellow: #fff2d6;
-      --shadow: 0 8px 28px rgba(24, 48, 67, .055);
-      --font: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", "Segoe UI", sans-serif
-    }
-
-    * {
-      box-sizing: border-box
-    }
-
-    html {
-      scroll-behavior: smooth;
-      scroll-padding-top: 90px
-    }
-
-    body {
-      margin: 0;
-      color: var(--ink);
-      background: var(--bg);
-      font-family: var(--font);
-      font-size: 15px;
-      line-height: 1.7
-    }
-
-    button,
-    a,
-    input {
-      font: inherit
-    }
-
-    button {
-      cursor: pointer
-    }
-
-    a {
-      color: inherit
-    }
-
-    button:focus-visible,
-    a:focus-visible,
-    input:focus-visible {
-      outline: 3px solid #77b3f3;
-      outline-offset: 3px
-    }
-
-    a {
-      text-decoration: none
-    }
-
-    .topline {
-      background: #142d43;
-      color: #e9f3fc;
-      text-align: center;
-      font-size: 12px;
-      font-weight: 650;
-      letter-spacing: .065em;
-      padding: 8px 16px
-    }
-
-    .site-header {
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(120deg, #e7f1fb 0%, #f6faf9 62%, #f6f5ec 100%);
-      border-bottom: 1px solid var(--line)
-    }
-
-    .site-header:before {
-      content: "";
-      position: absolute;
-      top: -215px;
-      right: -100px;
-      width: 560px;
-      height: 560px;
-      border: 1px solid rgba(42, 93, 145, .12);
-      border-radius: 50%;
-      box-shadow: 0 0 0 75px rgba(71, 140, 177, .045), 0 0 0 148px rgba(71, 140, 177, .03);
-      pointer-events: none
-    }
-
-    .hero {
-      max-width: 1250px;
-      margin: 0 auto;
-      position: relative;
-      padding: 50px 28px 48px;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 350px;
-      gap: 50px;
-      align-items: center
-    }
-
-    .eyebrow {
-      font-size: 12px;
-      letter-spacing: .15em;
-      color: var(--brand);
-      font-weight: 850;
-      text-transform: uppercase;
-      margin: 0 0 16px
-    }
-
-    .hero h1 {
-      font-size: clamp(30px, 3.4vw, 48px);
-      line-height: 1.34;
-      letter-spacing: -.045em;
-      margin: 0 0 16px;
-      font-weight: 850;
-      max-width: 820px
-    }
-
-    .hero h1 em {
-      font-style: normal;
-      color: var(--brand)
-    }
-
-    .hero p.lead {
-      max-width: 700px;
-      color: #476173;
-      font-size: 16px;
-      line-height: 1.9;
-      margin: 0
-    }
-
-    .hero-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 9px;
-      margin-top: 22px
-    }
-
-    .hero-tags span {
-      border: 1px solid #cbdce9;
-      color: #315979;
-      background: #ffffffa8;
-      border-radius: 30px;
-      padding: 5px 12px;
-      font-size: 12px;
-      font-weight: 750
-    }
-
-    .hero-art {
-      height: 230px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative
-    }
-
-    .art-paper {
-      position: absolute;
-      background: #fff;
-      border: 1px solid #d6e4ed;
-      box-shadow: 0 16px 32px rgba(30, 72, 111, .12);
-      width: 205px;
-      height: 185px;
-      border-radius: 16px;
-      transform: rotate(-8deg);
-      left: 25px;
-      top: 21px;
-      padding: 22px
-    }
-
-    .art-paper:after {
-      content: "";
-      display: block;
-      height: 8px;
-      background: #d8e8f4;
-      border-radius: 8px;
-      margin-top: 16px;
-      box-shadow: 0 20px #e7eef4, 0 40px #e7eef4
-    }
-
-    .art-dot {
-      background: #3769b3;
-      border-radius: 50%;
-      width: 12px;
-      height: 12px;
-      margin-bottom: 9px
-    }
-
-    .art-card {
-      position: absolute;
-      right: 10px;
-      bottom: 8px;
-      width: 213px;
-      height: 170px;
-      background: #194677;
-      color: white;
-      border-radius: 18px;
-      transform: rotate(8deg);
-      padding: 25px 22px;
-      box-shadow: 0 20px 36px rgba(22, 65, 105, .23)
-    }
-
-    .art-card .art-big {
-      font-size: 54px;
-      line-height: 1;
-      font-weight: 820;
-      letter-spacing: -.08em
-    }
-
-    .art-card .art-small {
-      font-size: 12px;
-      letter-spacing: .13em;
-      margin-top: 16px;
-      color: #cbe4ff
-    }
-
-    .art-card .art-line {
-      height: 5px;
-      border-radius: 12px;
-      background: #9dc5e9;
-      width: 76px;
-      margin-top: 13px
-    }
-
-    .hero-blob {
-      position: absolute;
-      width: 76px;
-      height: 76px;
-      background: #c2e9d7;
-      border-radius: 50%;
-      top: 0;
-      right: 8px;
-      opacity: .9
-    }
-
-    .wrap {
-      max-width: 1250px;
-      margin: auto;
-      padding: 29px 28px 80px
-    }
-
-    .intro-strip {
-      background: #173b55;
-      border-radius: 15px;
-      color: #fff;
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
-      padding: 20px 25px;
-      margin-bottom: 27px;
-      box-shadow: 0 6px 17px rgba(21, 61, 91, .07)
-    }
-
-    .intro-emoji {
-      font-size: 23px;
-      line-height: 1.2
-    }
-
-    .intro-strip strong {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 15px
-    }
-
-    .intro-strip p {
-      margin: 0;
-      font-size: 13px;
-      line-height: 1.85;
-      color: #dcecf5
-    }
-
-    .mobile-nav {
-      display: none
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 254px minmax(0, 1fr);
-      gap: 32px;
-      align-items: start
-    }
-
-    .sidebar {
-      position: sticky;
-      top: 24px;
-      align-self: start;
-      max-height: calc(100vh - 46px);
-      overflow-y: auto;
-      scrollbar-width: thin
-    }
-
-    .side-card {
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      box-shadow: var(--shadow);
-      padding: 19px 14px
-    }
-
-    .side-heading {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 9px 12px
-    }
-
-    .side-heading strong {
-      font-size: 13px
-    }
-
-    .side-heading small {
-      font-size: 11px;
-      color: var(--muted)
-    }
-
-    .progress-wrap {
-      padding: 0 9px 14px
-    }
-
-    .progress-track {
-      height: 7px;
-      background: #e7eef1;
-      border-radius: 30px;
-      overflow: hidden
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #55a0db, #2d7d66);
-      width: 0;
-      transition: width .3s
-    }
-
-    .progress-desc {
-      margin-top: 9px;
-      font-size: 12px;
-      color: var(--slate)
-    }
-
-    .step-nav {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      padding: 10px 9px;
-      border-radius: 10px;
-      color: #5a6d7b;
-      font-size: 12.5px;
-      font-weight: 650;
-      line-height: 1.4;
-      margin: 2px 0;
-      transition: background .15s
-    }
-
-    .step-nav:hover,
-    .step-nav.active {
-      background: #eef5fb;
-      color: var(--brand2)
-    }
-
-    .nav-dot {
-      flex: 0 0 27px;
-      height: 27px;
-      background: #eef2f5;
-      border-radius: 8px;
-      display: grid;
-      place-items: center;
-      font-weight: 800;
-      color: #667c89
-    }
-
-    .step-nav.active .nav-dot {
-      background: #d6eafb;
-      color: #1a598f
-    }
-
-    .nav-text {
-      flex: 1
-    }
-
-    .nav-state {
-      color: #b9c8ce;
-      font-size: 17px
-    }
-
-    .step-nav.done .nav-state {
-      color: #1c9b76
-    }
-
-    .sidebar-actions {
-      border-top: 1px solid var(--line);
-      margin-top: 11px;
-      padding: 14px 5px 2px;
-      display: grid;
-      gap: 9px
-    }
-
-    .side-btn {
-      display: flex;
-      gap: 9px;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid #d3e1e9;
-      border-radius: 10px;
-      background: #f8fafb;
-      padding: 9px 11px;
-      color: #1e466b;
-      font-size: 12px;
-      font-weight: 750
-    }
-
-    .side-btn:hover {
-      background: #edf5fc
-    }
-
-    .side-btn.primary {
-      background: #245b92;
-      border-color: #245b92;
-      color: #fff
-    }
-
-    .side-btn.primary:hover {
-      background: #174677
-    }
-
-    .section-heading {
-      margin: 4px 0 20px
-    }
-
-    .section-heading small {
-      letter-spacing: .15em;
-      text-transform: uppercase;
-      color: #517aa1;
-      font-size: 11px;
-      font-weight: 900
-    }
-
-    .section-heading h2 {
-      font-size: clamp(23px, 2.5vw, 31px);
-      line-height: 1.3;
-      margin: 5px 0 8px;
-      letter-spacing: -.04em
-    }
-
-    .section-heading p {
-      color: var(--slate);
-      font-size: 13.5px;
-      margin: 0
-    }
-
-    .tag-legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 13px
-    }
-
-    .tag-legend span {
-      font-size: 11px;
-      background: white;
-      border: 1px solid #d8e3e8;
-      padding: 4px 10px;
-      border-radius: 30px;
-      color: #627584;
-      font-weight: 650
-    }
-
-    .guidance {
-      background: #ffffff;
-      border: 1px solid var(--line);
-      border-left: 4px solid #64a28f;
-      border-radius: 11px;
-      padding: 16px 20px;
-      display: grid;
-      gap: 8px;
-      color: #4f6674;
-      font-size: 13px;
-      margin-bottom: 22px
-    }
-
-    .guidance strong {
-      color: #1c4c65
-    }
-
-    .guidance p {
-      margin: 0
-    }
-
-    .step-card {
-      background: white;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      box-shadow: var(--shadow);
-      padding: 26px 28px 24px;
-      margin-bottom: 25px;
-      scroll-margin-top: 18px
-    }
-
-    .step-head {
-      display: flex;
-      align-items: flex-start;
-      gap: 15px;
-      margin-bottom: 21px
-    }
-
-    .step-number {
-      flex: 0 0 53px;
-      height: 53px;
-      display: grid;
-      place-items: center;
-      border-radius: 15px;
-      background: #e9f2fa;
-      color: var(--brand);
-      font-size: 20px;
-      font-weight: 850;
-      letter-spacing: -.04em
-    }
-
-    .step-title-wrap {
-      min-width: 0;
-      flex: 1
-    }
-
-    .step-topline {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin: 0 0 4px
-    }
-
-    .mode-tag {
-      font-size: 11px;
-      background: #e7f2fb;
-      color: #235f94;
-      font-weight: 780;
-      padding: 2px 8px;
-      border-radius: 5px
-    }
-
-    .mode-tag.canvas-tag {
-      background: #dcf2e8;
-      color: #18775d
-    }
-
-    .time-tag {
-      color: var(--muted);
-      font-size: 11px
-    }
-
-    .step-head h3 {
-      margin: 0 0 6px;
-      font-size: 21px;
-      letter-spacing: -.035em;
-      line-height: 1.4
-    }
-
-    .step-description {
-      font-size: 13px;
-      color: #697b88;
-      margin: 0
-    }
-
-    .stage-done {
-      align-self: flex-start;
-      white-space: nowrap;
-      color: #97a6af;
-      font-size: 11px;
-      font-weight: 720;
-      padding: 3px 10px;
-      border: 1px solid #e5ecef;
-      border-radius: 30px
-    }
-
-    .stage-done.done {
-      background: #e5f7ed;
-      border-color: #b9e5cd;
-      color: #178363
-    }
-
-    .attachment-box {
-      background: #f6f9fb;
-      border: 1px solid #e2ebf0;
-      border-radius: 12px;
-      padding: 16px 17px;
-      margin-bottom: 19px
-    }
-
-    .box-label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      color: #2d536f;
-      margin-bottom: 12px
-    }
-
-    .mini-ico {
-      display: grid;
-      place-items: center;
-      background: #e4f0fa;
-      border-radius: 7px;
-      width: 24px;
-      height: 24px;
-      color: #2d69a6;
-      font-size: 15px
-    }
-
-    .attached-count {
-      margin-left: auto;
-      color: #7e93a1;
-      font-weight: 500;
-      font-size: 11px
-    }
-
-    .attachment-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px
-    }
-
-    .attachment-chip {
-      border: 1px solid #cfe0ed;
-      border-radius: 8px;
-      padding: 5px 9px;
-      background: #fff;
-      color: #365366;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 12px;
-      line-height: 1.5;
-      flex-wrap: wrap
-    }
-
-    .file-code {
-      font-size: 11px;
-      background: #e7f0fa;
-      color: #225c93;
-      padding: 1px 6px;
-      font-weight: 850;
-      border-radius: 4px
-    }
-
-    .file-status {
-      font-size: 10px;
-      background: #e9f5ef;
-      color: #177558;
-      padding: 1px 6px;
-      border-radius: 30px;
-      white-space: nowrap
-    }
-
-    .attachment-chip.chip-muted {
-      color: #7e8a92;
-      border-style: dashed
-    }
-
-    .attachment-chip.chip-muted .file-status {
-      background: #eceff0;
-      color: #667781
-    }
-
-    .attachment-tip {
-      color: #5d7281;
-      font-size: 12.2px;
-      line-height: 1.85;
-      margin: 13px 0 0
-    }
-
-    .attachment-tip strong {
-      color: #2e556c
-    }
-
-    .prompt-shell {
-      border: 1px solid #d7e4ed;
-      overflow: hidden;
-      border-radius: 12px;
-      margin-bottom: 19px;
-      background: #f9fbfd
-    }
-
-    .prompt-bar {
-      background: #eaf2f9;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 14px;
-      padding: 11px 14px;
-      border-bottom: 1px solid #d7e4ed
-    }
-
-    .prompt-label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      color: #2c5678;
-      font-weight: 850;
-      flex-wrap: wrap
-    }
-
-    .prompt-label small {
-      font-size: 11px;
-      color: #8297a4;
-      font-weight: 500
-    }
-
-    .prompt-dot {
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
       width: 8px;
       height: 8px;
-      background: #3d81b9;
-      border-radius: 50%
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+    }
+    .dark ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #94a3b8;
+      border-radius: 4px;
+    }
+    .dark ::-webkit-scrollbar-thumb {
+      background: #334155;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #64748b;
+    }
+    .dark ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
     }
 
-    .prompt-actions {
-      display: flex;
-      gap: 7px
+    [x-cloak] { display: none !important; }
+    /* Themed Logo */
+    .logo-themed {
+      transition: filter 0.2s ease-in-out;
+    }
+    .dark .logo-themed {
+      filter: invert(1) brightness(1.2);
     }
 
-    .copy-btn {
-      background: #235b99;
-      color: #fff;
-      border: 1px solid #235b99;
-      border-radius: 8px;
-      padding: 8px 13px;
-      font-size: 12px;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      white-space: nowrap
+    
+    /* Background grid pattern */
+    .bg-grid-pattern {
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(148, 163, 184, 0.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
     }
-
-    .copy-btn:hover {
-      background: #124a85
-    }
-
-    .copy-btn.copied {
-      background: #137c60;
-      border-color: #137c60
-    }
-
-    .copy-icon {
-      font-size: 16px;
-      line-height: 1
-    }
-
-    .fold-btn {
-      border: 1px solid #cedfea;
-      background: #fff;
-      color: #48708b;
-      border-radius: 8px;
-      padding: 7px 10px;
-      font-size: 12px;
-      font-weight: 730
-    }
-
-    .fold-btn:hover {
-      background: #f5faff
-    }
-
-    .prompt-text {
-      display: block;
-      padding: 20px 22px;
-      font: 13px/1.95 var(--font);
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-      tab-size: 2;
-      margin: 0;
-      color: #304957;
-      max-height: none;
-      transition: opacity .2s
-    }
-
-    .prompt-text.folded {
-      display: none
-    }
-
-    .check-section {
-      border-top: 1px solid #e4ebee;
-      padding-top: 19px
-    }
-
-    .check-heading {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 11px;
-      gap: 10px
-    }
-
-    .check-heading strong {
-      font-size: 14px;
-      color: #284a5d
-    }
-
-    .check-heading p {
-      margin: 0 0 0 26px;
-      color: #85949d;
-      font-size: 11.5px
-    }
-
-    .check-heading-ico {
-      display: inline-grid;
-      place-items: center;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: #def3ea;
-      color: #147a5f;
-      font-size: 13px;
-      font-weight: 900;
-      margin-right: 6px
-    }
-
-    .check-counter {
-      white-space: nowrap;
-      background: #f2f5f6;
-      color: #667a87;
-      border: 1px solid #e2e9eb;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 800;
-      padding: 3px 10px;
-      font-variant-numeric: tabular-nums
-    }
-
-    .checks-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 9px 12px
-    }
-
-    .check-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      background: #fcfdfd;
-      border: 1px solid #e8eef1;
-      border-radius: 9px;
-      padding: 11px 12px;
-      font-size: 12.5px;
-      line-height: 1.65;
-      cursor: pointer;
-      color: #4b6271
-    }
-
-    .check-item:hover {
-      background: #f6fafc
-    }
-
-    .check-item:has(input:checked) {
-      background: #f1faf5;
-      border-color: #c3e7d5;
-      color: #2e6753
-    }
-
-    .check-item input {
-      width: 17px;
-      height: 17px;
-      accent-color: #1b976d;
-      flex-shrink: 0;
-      margin: 2px 0 0;
-      cursor: pointer
-    }
-
-    .deliverable {
-      margin-top: 17px;
-      background: #f3f8fc;
-      border-radius: 10px;
-      display: flex;
-      align-items: flex-start;
-      gap: 11px;
-      padding: 11px 13px;
-      font-size: 12.3px;
-      color: #4b6c7f
-    }
-
-    .deliverable-icon {
-      font-size: 17px;
-      color: #4883a9
-    }
-
-    .deliverable strong {
-      display: inline-block;
-      margin-right: 8px;
-      color: #2b5472
-    }
-
-    .last-note {
-      background: #e7f2ee;
-      color: #3a6660;
-      border: 1px solid #cce7dd;
-      border-radius: 13px;
-      padding: 20px 24px;
-      font-size: 13px;
-      line-height: 1.9;
-      margin-top: 5px
-    }
-
-    .last-note strong {
-      font-size: 15px;
-      color: #176c56
-    }
-
-    .last-note p {
-      margin: 4px 0 0
-    }
-
-    .footer {
-      text-align: center;
-      color: #91a0a9;
-      font-size: 12px;
-      margin-top: 40px
-    }
-
-    .footer strong {
-      color: #597487
-    }
-
-    .toast {
-      position: fixed;
-      right: 23px;
-      bottom: 22px;
-      z-index: 50;
-      background: #173f50;
-      color: #fff;
-      padding: 12px 18px;
-      border-radius: 12px;
-      box-shadow: 0 12px 30px #071f3152;
-      font-size: 13px;
-      transition: opacity .2s, transform .2s;
-      pointer-events: none;
-      opacity: 0;
-      transform: translateY(14px)
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateY(0)
-    }
-
-    @media(max-width:1080px) {
-      .hero {
-        grid-template-columns: 1fr 265px;
-        gap: 20px
-      }
-
-      .hero-art {
-        transform: scale(.82);
-        transform-origin: center
-      }
-
-      .layout {
-        grid-template-columns: 215px minmax(0, 1fr);
-        gap: 19px
-      }
-
-      .step-card {
-        padding: 22px
-      }
-
-      .checks-grid {
-        grid-template-columns: 1fr
-      }
-    }
-
-    @media(max-width:780px) {
-      html {
-        scroll-padding-top: 72px
-      }
-
-      .hero {
-        padding: 37px 22px 33px;
-        display: block
-      }
-
-      .hero h1 {
-        max-width: none;
-        font-size: clamp(29px, 7.5vw, 43px)
-      }
-
-      .hero-art {
-        display: none
-      }
-
-      .hero p.lead {
-        font-size: 14px
-      }
-
-      .wrap {
-        padding: 17px 14px 60px
-      }
-
-      .intro-strip {
-        padding: 16px;
-        margin-bottom: 14px
-      }
-
-      .layout {
-        display: block
-      }
-
-      .sidebar {
-        display: none
-      }
-
-      .mobile-nav {
-        position: sticky;
-        top: 0;
-        z-index: 8;
-        display: flex;
-        background: #ffffffee;
-        backdrop-filter: blur(14px);
-        border-bottom: 1px solid var(--line);
-        overflow-x: auto;
-        gap: 7px;
-        padding: 10px 14px;
-        scrollbar-width: thin;
-        margin: 0 -14px 22px;
-        box-shadow: 0 5px 11px #1e46500d
-      }
-
-      .mobile-nav a {
-        border: 1px solid #d7e5ec;
-        padding: 7px 10px;
-        background: #f8fbfd;
-        border-radius: 9px;
-        display: flex;
-        gap: 6px;
-        white-space: nowrap;
-        font-size: 12px;
-        font-weight: 800;
-        color: #286197
-      }
-
-      .mobile-nav a span {
-        font-weight: 500;
-        color: #62798a
-      }
-
-      .mobile-nav a.active {
-        background: #1d5a91;
-        color: white;
-        border-color: #1d5a91
-      }
-
-      .mobile-nav a.active span {
-        color: #e4f1fc
-      }
-
-      .step-card {
-        scroll-margin-top: 75px;
-        padding: 19px 17px;
-        border-radius: 14px;
-        margin-bottom: 17px
-      }
-
-      .step-head {
-        gap: 10px;
-        flex-wrap: wrap
-      }
-
-      .step-number {
-        width: 42px;
-        height: 42px;
-        flex-basis: 42px;
-        border-radius: 11px;
-        font-size: 16px
-      }
-
-      .step-head h3 {
-        font-size: 18px
-      }
-
-      .stage-done {
-        margin-left: 52px
-      }
-
-      .check-heading {
-        align-items: flex-start
-      }
-
-      .prompt-text {
-        padding: 16px;
-        font-size: 12.6px;
-        line-height: 1.85
-      }
-
-      .prompt-bar {
-        padding: 9px;
-        gap: 9px
-      }
-
-      .prompt-label small {
-        display: none
-      }
-
-      .copy-btn {
-        padding: 8px 10px
-      }
-
-      .fold-btn {
-        padding: 8px
-      }
-
-      .check-section {
-        padding-top: 15px
-      }
-    }
-
-    @media(max-width:450px) {
-      .hero h1 {
-        font-size: 30px
-      }
-
-      .step-head .stage-done {
-        display: none
-      }
-
-      .attachment-box {
-        padding: 12px
-      }
-
-      .attachment-chip {
-        font-size: 11.5px
-      }
-
-      .attachment-tip {
-        font-size: 11.5px
-      }
-
-      .check-item {
-        font-size: 12px
-      }
-
-      .prompt-label {
-        font-size: 12px
-      }
-
-      .copy-btn {
-        font-size: 11px
-      }
-
-      .fold-btn {
-        font-size: 11px
-      }
-
-      .prompt-actions {
-        gap: 4px
-      }
-    }
-
-    @media(prefers-reduced-motion:reduce) {
-      html {
-        scroll-behavior: auto
-      }
-
-      * {
-        animation-duration: .01ms !important;
-        transition-duration: .01ms !important
-      }
-    }
-
-    @media print {
-      body {
-        background: #fff;
-        font-size: 12px
-      }
-
-      .topline,
-      .hero-art,
-      .sidebar,
-      .mobile-nav,
-      .prompt-actions,
-      .toast,
-      .sidebar-actions {
-        display: none !important
-      }
-
-      .site-header {
-        background: #fff
-      }
-
-      .hero {
-        display: block;
-        padding: 12px 0 16px
-      }
-
-      .hero h1 {
-        font-size: 24px
-      }
-
-      .wrap {
-        padding: 0
-      }
-
-      .intro-strip {
-        background: #eee;
-        color: #222;
-        box-shadow: none;
-        padding: 10px
-      }
-
-      .intro-strip p {
-        color: #222
-      }
-
-      .layout {
-        display: block
-      }
-
-      .step-card {
-        border: 1px solid #ccc;
-        box-shadow: none;
-        break-inside: avoid-page;
-        padding: 12px;
-        margin-bottom: 15px
-      }
-
-      .prompt-text {
-        display: block !important;
-        overflow: visible;
-        padding: 10px 12px;
-        font-size: 10px;
-        line-height: 1.45
-      }
-
-      .prompt-shell {
-        border-color: #ccc
-      }
-
-      .checks-grid {
-        grid-template-columns: 1fr 1fr
-      }
-
-      .check-item {
-        padding: 6px;
-        font-size: 10px
-      }
-
-      .attachment-box {
-        padding: 8px
-      }
-
-      .footer {
-        display: none
-      }
-
-      .last-note {
-        padding: 10px
-      }
-
-      .step-head h3 {
-        font-size: 15px
-      }
+    .dark .bg-grid-pattern {
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
     }
   </style>
 </head>
 
-<body>
-  <header class="site-header">
-    <div class="hero">
-      <div>
-        <p class="eyebrow">TEACHER WORKSHOP / 2026</p>
-        <h1><em>Gemini ×</em> 國中素養命題<br>與互動教材實戰</h1>
-        <p class="lead">從分析課本、理解官方命題規準，到原創命題、專業審題，再用 Gemini Canvas 完成「互動測驗」與「單元遊戲」。九個階段，跟著提示詞一步步實作。</p>
-        <div class="hero-tags"><span>免費版 Gemini</span><span>提示詞參考</span><span>建議段附件</span><span>檢核進度</span></div>
-      </div>
-      <div class="hero-art" aria-hidden="true">
-        <div class="hero-blob"></div>
-        <div class="art-paper">
-          <div class="art-dot"></div>
-          <div class="art-dot" style="background:#81badf"></div>
-          <div class="art-dot" style="background:#b4dcd5"></div>
+<body 
+  x-data="workflowApp()" 
+  x-init="initApp()" 
+  class="bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-100 font-sans min-h-screen antialiased bg-grid-pattern selection:bg-cyan-500 selection:text-black transition-colors duration-200"
+  :class="fontSizeClass"
+>
+
+  <!-- Top Ambient Glow -->
+  <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-64 bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-emerald-500/10 dark:from-cyan-600/15 dark:via-purple-600/15 dark:to-emerald-600/15 blur-3xl pointer-events-none -z-10"></div>
+
+  <!-- Header Section -->
+  <header class="sticky top-0 z-40 backdrop-blur-xl bg-white/90 dark:bg-slate-950/85 border-b border-slate-200/90 dark:border-slate-800/80 shadow-md dark:shadow-2xl transition-colors duration-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        
+        <!-- Logo & Title -->
+        <div class="flex items-center gap-3">
+          <!-- Logo with Rounded Rectangle -->
+          <div class="w-12 h-12 rounded-2xl overflow-hidden border-2 border-cyan-500/50 dark:border-cyan-400/60 shadow-md shadow-cyan-500/20 flex-shrink-0 bg-slate-50 dark:bg-slate-900 p-1.5 transition-transform hover:scale-105 duration-200 flex items-center justify-center">
+            <img src="Aliang250.png" alt="Aliang Logo" class="w-full h-full object-contain rounded-xl logo-themed dark:invert">
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+                會考素養題，AI 來出招！
+              </h1>
+              <span class="hidden sm:inline-flex px-2.5 py-0.5 text-xs font-semibold rounded-full bg-cyan-100 text-cyan-800 dark:bg-cyan-950 dark:text-cyan-300 border border-cyan-300 dark:border-cyan-800/60">
+                Gemini Notebook 工作台
+              </span>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
+              國中會考素養導向評量與漸進式命題協作工作流
+            </p>
+          </div>
         </div>
-        <div class="art-card">
-          <div class="art-big">09<span style="color:#86d7b3">.</span></div>
-          <div class="art-small">PROMPTS · 05 QUESTIONS · 02 SITES</div>
-          <div class="art-line"></div>
+
+        <!-- Utility Controls -->
+        <div class="flex items-center flex-wrap gap-2 justify-between md:justify-end">
+          
+          <!-- Overall Progress Badge -->
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 shadow-inner">
+            <div class="flex items-center gap-1.5">
+              <span class="inline-block w-2.5 h-2.5 rounded-full" :class="overallPercentage === 100 ? 'bg-emerald-500 animate-ping' : 'bg-cyan-500 dark:bg-cyan-400'"></span>
+              <span class="text-xs font-semibold text-slate-600 dark:text-slate-300">總檢核進度</span>
+            </div>
+            <span class="text-sm font-bold text-cyan-600 dark:text-cyan-400" x-text="completedCount + '/' + totalChecklistCount"></span>
+            <div class="w-16 h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-cyan-500 to-emerald-400 transition-all duration-300" :style="`width: ${overallPercentage}%`"></div>
+            </div>
+            <span class="text-xs font-bold text-slate-500 dark:text-slate-400" x-text="overallPercentage + '%'"></span>
+          </div>
+
+          <!-- Font Size Adjuster -->
+          <button 
+            @click="toggleFontSize(); playSound('click')"
+            title="調整文字大小" 
+            class="px-2.5 py-1.5 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700/80 text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-all active:scale-95 text-xs font-semibold flex items-center gap-1 shadow-sm"
+          >
+            <span class="text-base font-bold">A</span>
+            <span x-text="fontSize === 'normal' ? '大字級' : '標準字級'"></span>
+          </button>
+
+          <!-- Dark / Light Mode Toggle Button -->
+          <button 
+            @click="toggleTheme()"
+            :title="isDark ? '切換為淺色模式' : '切換為深色模式'"
+            class="p-2 rounded-xl border transition-all active:scale-95 shadow-sm"
+            :class="isDark 
+              ? 'bg-slate-900 hover:bg-slate-800 border-amber-500/40 text-amber-400' 
+              : 'bg-white hover:bg-slate-100 border-slate-200 text-indigo-600'"
+          >
+            <!-- Sun Icon (shown in dark mode to switch to light) -->
+            <template x-if="isDark">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            </template>
+            <!-- Moon Icon (shown in light mode to switch to dark) -->
+            <template x-if="!isDark">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            </template>
+          </button>
+
+          <!-- Audio Toggle -->
+          <button 
+            @click="toggleAudio()"
+            :title="isMuted ? '開啟音效' : '靜音'"
+            class="p-2 rounded-xl border transition-all active:scale-95 shadow-sm"
+            :class="isMuted 
+              ? 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-400' 
+              : 'bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border-cyan-400 dark:border-cyan-800/60 text-cyan-600 dark:text-cyan-400'"
+          >
+            <template x-if="!isMuted">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+              </svg>
+            </template>
+            <template x-if="isMuted">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+              </svg>
+            </template>
+          </button>
+
+          <!-- Reset Button -->
+          <button 
+            @click="resetProgress()"
+            title="重設所有檢核項目"
+            class="px-2.5 py-1.5 rounded-xl bg-white hover:bg-red-50 dark:bg-slate-900 dark:hover:bg-red-950/40 border border-slate-200 dark:border-slate-700/80 hover:border-red-300 dark:hover:border-red-800 text-slate-600 hover:text-red-600 dark:text-slate-400 dark:hover:text-red-400 transition-all active:scale-95 text-xs font-medium flex items-center gap-1 shadow-sm"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            <span>重設進度</span>
+          </button>
         </div>
       </div>
     </div>
   </header>
-  <div class="wrap">
-    <div class="intro-strip">
-      <div class="intro-emoji" aria-hidden="true">✦</div>
-      <div><strong>本範例都在同一個 Gemini 對話，分階段完成</strong>
-        <p>每一階段先上傳指定附件，再按「複製提示詞」貼入 Gemini。確認成果後，勾選「教師檢核」再進下一階段。</p>
-      </div>
-    </div>
-    <nav class="mobile-nav" aria-label="手機版 Prompt 快速導覽"><a href="#prompt-0" data-mob-nav="0">P0
-        <span>建立命題任務</span></a><a href="#prompt-1" data-mob-nav="1">P1 <span>建立會考與素養命題依據</span></a><a href="#prompt-2"
-        data-mob-nav="2">P2 <span>分析歷屆會考試題</span></a><a href="#prompt-3" data-mob-nav="3">P3
-        <span>建立五題素養命題藍圖</span></a><a href="#prompt-4" data-mob-nav="4">P4 <span>蒐集與查證命題素材</span></a><a href="#prompt-5"
-        data-mob-nav="5">P5 <span>正式產生五題原創試題</span></a><a href="#prompt-6" data-mob-nav="6">P6
-        <span>命題審查、修正與定稿</span></a><a href="#prompt-7" data-mob-nav="7">P7 <span>Canvas 製作五題互動測驗</span></a><a
-        href="#prompt-8" data-mob-nav="8">P8 <span>Canvas 製作單元學習遊戲</span></a></nav>
-    <div class="layout">
-      <aside class="sidebar" aria-label="階段導覽與進度">
-        <div class="side-card">
-          <div class="side-heading"><strong>學習進度</strong><small>9 階段 · 55 項檢核</small></div>
-          <div class="progress-wrap">
-            <div class="progress-track">
-              <div class="progress-fill" id="progress-fill"></div>
+
+  <!-- Main Workflow Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+      <!-- Left Sidebar: Stepper Navigation -->
+      <aside class="lg:col-span-4 lg:sticky lg:top-24 space-y-4">
+        
+        <div class="bg-white/95 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-4 sm:p-5 shadow-xl dark:shadow-2xl backdrop-blur-md transition-colors duration-200">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-200 dark:border-slate-800">
+            <div class="flex items-center gap-2">
+              <span class="flex h-3 w-3 relative">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
+              </span>
+              <h2 class="text-base font-bold text-slate-900 dark:text-white tracking-wide">漸進式命題階段</h2>
             </div>
-            <div class="progress-desc" id="progress-label">尚未完成檢核</div>
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300" x-text="`第 ${currentStepIndex + 1} / ${prompts.length} 步`"></span>
           </div>
-          <div class="sidebar-list"><a href="#prompt-0" class="step-nav" data-nav="0"><span
-                class="nav-dot">0</span><span class="nav-text">建立命題任務</span><span class="nav-state"
-                id="nav-state-0">○</span></a><a href="#prompt-1" class="step-nav" data-nav="1"><span
-                class="nav-dot">1</span><span class="nav-text">建立會考與素養命題依據</span><span class="nav-state"
-                id="nav-state-1">○</span></a><a href="#prompt-2" class="step-nav" data-nav="2"><span
-                class="nav-dot">2</span><span class="nav-text">分析歷屆會考試題</span><span class="nav-state"
-                id="nav-state-2">○</span></a><a href="#prompt-3" class="step-nav" data-nav="3"><span
-                class="nav-dot">3</span><span class="nav-text">建立五題素養命題藍圖</span><span class="nav-state"
-                id="nav-state-3">○</span></a><a href="#prompt-4" class="step-nav" data-nav="4"><span
-                class="nav-dot">4</span><span class="nav-text">蒐集與查證命題素材</span><span class="nav-state"
-                id="nav-state-4">○</span></a><a href="#prompt-5" class="step-nav" data-nav="5"><span
-                class="nav-dot">5</span><span class="nav-text">正式產生五題原創試題</span><span class="nav-state"
-                id="nav-state-5">○</span></a><a href="#prompt-6" class="step-nav" data-nav="6"><span
-                class="nav-dot">6</span><span class="nav-text">命題審查、修正與定稿</span><span class="nav-state"
-                id="nav-state-6">○</span></a><a href="#prompt-7" class="step-nav" data-nav="7"><span
-                class="nav-dot">7</span><span class="nav-text">Canvas 製作五題互動測驗</span><span class="nav-state"
-                id="nav-state-7">○</span></a><a href="#prompt-8" class="step-nav" data-nav="8"><span
-                class="nav-dot">8</span><span class="nav-text">Canvas 製作單元學習遊戲</span><span class="nav-state"
-                id="nav-state-8">○</span></a></div>
-          <div class="sidebar-actions"><button class="side-btn primary" id="download-all" type="button">↓ 下載全部提示詞
-              .txt</button><button class="side-btn" id="copy-status" type="button">⧉ 複製教師檢核紀錄</button><button
-              class="side-btn" id="toggle-all" type="button">− 收合所有提示詞</button><button class="side-btn"
-              id="clear-status" type="button">↺ 清除檢核紀錄</button></div>
+
+          <!-- Step Buttons List -->
+          <nav class="space-y-1.5 max-h-[68vh] overflow-y-auto pr-1" aria-label="命題流程階段清單">
+            <template x-for="(p, idx) in prompts" :key="p.id">
+              <button 
+                @click="setStep(idx)"
+                class="w-full text-left p-3 rounded-2xl transition-all duration-200 flex items-center justify-between group relative border text-sm"
+                :class="currentStepIndex === idx 
+                  ? 'bg-gradient-to-r from-cyan-100/90 to-blue-50 dark:from-cyan-950/80 dark:to-slate-900 border-cyan-500 dark:border-cyan-500/80 shadow-md dark:shadow-neon-cyan/30 text-slate-900 dark:text-white font-bold ring-2 ring-cyan-400/40 dark:ring-cyan-500/50' 
+                  : isStepCompleted(p.id)
+                    ? 'bg-emerald-50/80 hover:bg-emerald-100/70 dark:bg-emerald-950/20 dark:hover:bg-emerald-950/40 border-emerald-300 dark:border-emerald-900/50 text-slate-800 dark:text-slate-300'
+                    : 'bg-slate-50/80 hover:bg-slate-100 dark:bg-slate-950/40 dark:hover:bg-slate-800/60 border-slate-200/90 dark:border-slate-800/80 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'"
+              >
+                <!-- Left Step Indicator & Title -->
+                <div class="flex items-center gap-2.5 min-w-0 pr-2">
+                  <!-- Number Badge / Check Icon -->
+                  <div 
+                    class="w-7 h-7 rounded-xl flex items-center justify-center text-xs font-black flex-shrink-0 transition-transform group-hover:scale-105"
+                    :class="isStepCompleted(p.id)
+                      ? 'bg-emerald-500 text-slate-950 shadow-neon-emerald/40' 
+                      : currentStepIndex === idx
+                        ? 'bg-gradient-to-br from-cyan-500 to-blue-600 text-white'
+                        : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-700'"
+                  >
+                    <template x-if="isStepCompleted(p.id)">
+                      <svg class="w-4 h-4 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </template>
+                    <template x-if="!isStepCompleted(p.id)">
+                      <span x-text="p.num"></span>
+                    </template>
+                  </div>
+
+                  <!-- Prompt Short Title -->
+                  <div class="truncate">
+                    <p class="truncate font-semibold tracking-tight" :class="currentStepIndex === idx ? 'text-cyan-800 dark:text-cyan-300 font-bold' : ''" x-text="p.shortTitle"></p>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-500 truncate" x-text="'Prompt ' + p.num"></p>
+                  </div>
+                </div>
+
+                <!-- Right Check Badge -->
+                <div class="flex-shrink-0 flex items-center gap-1">
+                  <span 
+                    class="text-[11px] font-mono px-2 py-0.5 rounded-lg border font-semibold"
+                    :class="isStepCompleted(p.id) 
+                      ? 'bg-emerald-100 dark:bg-emerald-900/50 border-emerald-300 dark:border-emerald-700/60 text-emerald-800 dark:text-emerald-300' 
+                      : getStepCheckedCount(p.id) > 0
+                        ? 'bg-cyan-100 dark:bg-cyan-950 border-cyan-300 dark:border-cyan-800 text-cyan-800 dark:text-cyan-300'
+                        : 'bg-slate-100 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700/60 text-slate-500 dark:text-slate-500'"
+                    x-text="getStepCheckedCount(p.id) + '/' + p.checklist.length"
+                  ></span>
+                </div>
+              </button>
+            </template>
+          </nav>
+
+          <!-- Quick Navigation Actions -->
+          <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2">
+            <button 
+              @click="prevStep()" 
+              :disabled="currentStepIndex === 0"
+              class="flex-1 py-2 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-bold text-slate-700 dark:text-slate-300 transition-all active:scale-95 flex items-center justify-center gap-1.5 shadow-sm"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+              </svg>
+              <span>上一步</span>
+            </button>
+
+            <button 
+              @click="nextStep()" 
+              :disabled="currentStepIndex === prompts.length - 1"
+              class="flex-1 py-2 px-3 rounded-xl border border-cyan-600 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-bold text-white transition-all active:scale-95 shadow-md flex items-center justify-center gap-1.5"
+            >
+              <span>下一步</span>
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
         </div>
+
+        <!-- Working Principle Reminder Card -->
+        <div class="p-4 rounded-3xl bg-white/95 dark:bg-gradient-to-br dark:from-slate-900/90 dark:to-slate-950 border border-slate-200 dark:border-slate-800/90 text-xs text-slate-600 dark:text-slate-400 space-y-2 shadow-md dark:shadow-none">
+          <div class="flex items-center gap-2 text-cyan-600 dark:text-cyan-400 font-bold">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>漸進式命題核心準則</span>
+          </div>
+          <p class="leading-relaxed">
+            嚴格禁止跳步或一步到位直接出題。每個步驟務必完成「教師檢核」並儲存為指定記事來源，再開啟下一階段，以確保會考試題效度與嚴謹性。
+          </p>
+        </div>
+
       </aside>
-      <main id="main">
-        <section class="section-heading"><small>SECTION 03 · COMPLETE PROMPT GUIDE</small>
-          <h2>操作提示詞參考</h2>
-        </section>
-        <section class="guidance" aria-label="使用重點">
-          <p><strong>① 先上傳再貼提示詞：</strong>「本次附件」標示當階段要新增的檔案；同一 Gemini 對話已上傳的資料通常不需重複上傳。</p>
-          <p><strong>② 人工審查不能省：</strong>Gemini 產生的課綱對應、試題答案、引文與遊戲學科內容，均需教師核對；B04 是自編研習審查表，非正式會考認證。</p>
-          <p><strong>③ 檢核進度保存在目前瀏覽器：</strong>勾選狀態會保存在本機瀏覽器，不會傳到網路；換瀏覽器或清除網站資料後可能無法保留。</p>
-        </section>
-        <article class="step-card" id="prompt-0" aria-labelledby="step-title-0">
-          <div class="step-head">
-            <div class="step-number">P0</div>
-            <div class="step-title-wrap">
-              <div class="step-topline"><span class="mode-tag ">一般對話</span><span class="time-tag">約 15 分鐘</span></div>
-              <h3 id="step-title-0">建立命題任務</h3>
-              <p class="step-description">先讓 Gemini 讀懂這次教學單元，確立年級及 選擇 A／B 命題模式，不急著出題。</p>
-            </div>
-            <div class="stage-done" id="badge-0" aria-live="polite">尚未檢核</div>
-          </div>
-          <section class="attachment-box" aria-label="P0 附件需求">
-            <div class="box-label"><span class="mini-ico">▤</span><strong>本次附件</strong><span class="attached-count">2
-                項資料說明</span></div>
-            <div class="attachment-list"><span class="attachment-chip "><span
-                  class="file-code">B01</span><span>我的教學單元.pdf／課本頁面</span><span
-                  class="file-status">必備</span></span><span class="attachment-chip "><span
-                  class="file-code">B02</span><span>學生學習進度.txt</span><span class="file-status">選用</span></span></div>
-            <p class="attachment-tip"><strong>上傳提醒</strong>　先上傳課本單元 PDF、圖片或自編講義，再只填四個欄位；其餘讓 Gemini 從教材協助整理。</p>
-          </section>
-          <div class="prompt-shell">
-            <div class="prompt-bar">
-              <div class="prompt-label"><span class="prompt-dot"></span>完整提示詞 <small>可直接貼至 Gemini</small></div>
-              <div class="prompt-actions"><button type="button" class="copy-btn" data-copy="0"
-                  aria-label="複製 Prompt 0 完整提示詞"><span class="copy-icon" aria-hidden="true">⧉</span><span
-                    class="copy-btn-text">複製提示詞</span></button><button type="button" class="fold-btn" data-fold="0"
-                  aria-expanded="true">收合</button></div>
-            </div>
-            <pre class="prompt-text" id="prompt-text-0">你是我的「國中素養導向評量與會考命題協作助理」。
 
-接下來，我們將在同一個對話中，透過多次提問，逐步完成原創素養導向，四選一試題，最後製作成互動測驗網站。
-
-請先閱讀我上傳的課本或單元教材，分析這次的命題任務。
-
-【命題基本設定】
-
-1. 任教科目：【國文／英語／數學／社會／自然】
-2. 任教年級：【七／八／九年級】
-3. 命題單元：【請填寫】
-4. 命題模式：【A／B】
-
-【命題模式說明】
-
-A｜年段適性命題
-- 評量對象是我指定年級的學生。
-- 題目以目前單元及已學知識為限。
-- 不要求學生運用尚未教授的概念。
-- 難度符合本年段實際教學及學生能力。
-- 保留素養導向與會考命題的品質要求。
-
-B｜會考綜合挑戰命題
-- 評量對象設定為接近國中畢業程度的學生。
-- 以指定單元為核心，可整合同一學科第四學習階段的相關知識。
-- 參照歷屆會考的認知需求，著重資料分析、概念整合、多步驟推理及應用。
-- 不必刻意增加文字長度或計算複雜度。
-- 若涉及目前班級尚未學過的內容，必須清楚標示，不得當成該年段日常評量直接使用。
-
-【本階段任務】
-
-請根據我上傳的教材及選擇的命題模式，完成以下工作：
-
-1. 整理命題設定卡
-   包含科目、年級、單元、命題模式及評量範圍。
-
-2. 分析單元學習內容
-   整理本單元的核心概念、重要知識與適合評量的能力。
-
-3. 分析命題範圍
-   根據 A／B 模式，說明適合評量的內容，以及可能超出範圍的知識。
-
-4. 確認後續所需資料
-   簡要列出下一階段需要補充的官方命題規準、素養命題方法或其他必要資料，不必立即搜尋。
-
-【重要原則】
-
-- 以我提供的教材為主要分析依據。
-- 不要自行假設學生已學過所有相關知識。
-- 無法從教材確認的先備知識或教學進度，請標示「待教師確認」。
-- 如果附件缺少重要頁面或內容無法辨識，請明確指出，不要自行補寫。
-- 目前只建立命題任務，不要產生試題。
-- 後續所有命題工作，都必須延續本次確認的設定與 A／B 模式。
-
-請以清楚、精簡的表格呈現分析結果。</pre>
-          </div>
-          <section class="check-section" aria-label="P0 教師檢核">
-            <div class="check-heading">
-              <div><span class="check-heading-ico">✓</span><strong>教師檢核</strong>
-                <p>實際檢查 Gemini 產出後，再勾選通過項目。</p>
-              </div><span class="check-counter" id="count-0">0 / 4</span>
-            </div>
-            <div class="checks-grid"><label class="check-item"><input class="task-checkbox" type="checkbox"
-                  data-stage="0" data-check="0" id="ck-0-0"><span class="check-text">已上傳正確的課本單元</span></label><label
-                class="check-item"><input class="task-checkbox" type="checkbox" data-stage="0" data-check="1"
-                  id="ck-0-1"><span class="check-text">科目、年級、單元、A／B 模式正確</span></label><label class="check-item"><input
-                  class="task-checkbox" type="checkbox" data-stage="0" data-check="2" id="ck-0-2"><span
-                  class="check-text">Gemini 分析的核心概念符合教材</span></label><label class="check-item"><input
-                  class="task-checkbox" type="checkbox" data-stage="0" data-check="3" id="ck-0-3"><span
-                  class="check-text">超出教學範圍的內容已標示</span></label></div>
-            <div class="deliverable"><span class="deliverable-icon">↗</span><span><strong>本階段成果</strong>命題設定卡＋單元學習摘要（保留供
-                P8 使用）</span></div>
-          </section>
-        </article>
-        <article class="step-card" id="prompt-1" aria-labelledby="step-title-1">
-          <div class="step-head">
-            <div class="step-number">P1 test</div>
-            <div class="step-title-wrap">
-              <div class="step-topline"><span class="mode-tag ">一般對話</span><span class="time-tag">約 20 分鐘</span></div>
-              <h3 id="step-title-1">建立會考與素養命題依據</h3>
-              <p class="step-description">將官方命題規準、素養導向要素與本科課綱交給 Gemini，先建立判斷依據。</p>
-            </div>
-            <div class="stage-done" id="badge-1" aria-live="polite">尚未檢核</div>
-          </div>
-          <section class="attachment-box" aria-label="P1 附件需求">
-            <div class="box-label"><span class="mini-ico">▤</span><strong>本次附件</strong><span class="attached-count">4
-                項資料說明</span></div>
-            <div class="attachment-list"><span class="attachment-chip "><span class="file-code">A01</span><span>116
-                  年國中教育會考問與答.pdf</span><span class="file-status">必備</span></span><span class="attachment-chip "><span
-                  class="file-code">A02</span><span>素養導向紙筆測驗要素與範例試題.pdf</span><span
-                  class="file-status">必備</span></span><span class="attachment-chip "><span
-                  class="file-code">A05</span><span>本科第四學習階段課綱.pdf</span><span class="file-status">必備</span></span>
-            </div>
-            <p class="attachment-tip"><strong>上傳提醒</strong>　三份官方 PDF 可由講師預先提供必要頁面；上傳後確認 Gemini 確實看得到完整重要內容。</p>
-          </section>
-          <div class="prompt-shell">
-            <div class="prompt-bar">
-              <div class="prompt-label"><span class="prompt-dot"></span>完整提示詞 <small>可直接貼至 Gemini</small></div>
-              <div class="prompt-actions"><button type="button" class="copy-btn" data-copy="1"
-                  aria-label="複製 Prompt 1 完整提示詞"><span class="copy-icon" aria-hidden="true">⧉</span><span
-                    class="copy-btn-text">複製提示詞</span></button><button type="button" class="fold-btn" data-fold="1"
-                  aria-expanded="true">收合</button></div>
-            </div>
-            <pre class="prompt-text" id="prompt-text-1">【本次附件】
-請先確認我已上傳以下四份官方資料：
-A01：116 年國中教育會考問與答
-A02：素養導向「紙筆測驗」要素與範例試題
-A05：十二年國教課程綱要總綱
-A05：本學科第四學習階段課程綱要
-
-若附件缺漏或無法讀取，請先指出，不要假裝已閱讀。
-
-接下來進行第一階段：建立正式命題依據。
-
-請沿用 Prompt 0 已經確認的科目、年級、單元及 A／B 命題模式。
-
-【三份資料的用途】
-
-1. 會考問與答：
-   確認正式會考的取材、命題原則及評量範圍。
-
-2. 素養導向紙筆測驗要素：
-   確認素養命題的核心原則、情境設計及能力評量方式。
-
-3. 本學科課綱：
-   確認指定單元相關的學習表現及學習內容。
-
-【工作任務】
-
-請完成：
-
-1. 摘要與本次命題相關的會考命題原則。
-2. 整理素養導向紙筆評量的核心要素。
-3. 分析本單元可能對應的課綱學習重點。
-4. 說明本單元適合評量的知識與能力。
-5. 分析 A／B 模式下的評量範圍與限制。
-6. 列出後續命題容易發生的錯誤。
-
-【輸出格式】
-
-表一：官方命題原則與素養命題要素
-表二：本單元的課綱對應與評量目標
-表三：本次命題的限制及注意事項
-
-重要結論請標示文件名稱及頁碼。
-
-不得自行編造課綱代碼、命題規範或未提供的資料。
-
-【本階段檢核】
-
-最後請確認：
-□ 已辨識三份附件
-□ 已維持正確的 A／B 模式
-□ 已找到與單元相關的學習重點
-□ 已區分官方規準與你的推論
-□ 已標示需要教師查證的事項
-
-本階段只建立命題依據，不要出題。</pre>
-          </div>
-          <section class="check-section" aria-label="P1 教師檢核">
-            <div class="check-heading">
-              <div><span class="check-heading-ico">✓</span><strong>教師檢核</strong>
-                <p>實際檢查 Gemini 產出後，再勾選通過項目。</p>
-              </div><span class="check-counter" id="count-1">0 / 5</span>
-            </div>
-            <div class="checks-grid"><label class="check-item"><input class="task-checkbox" type="checkbox"
-                  data-stage="1" data-check="0" id="ck-1-0"><span class="check-text">已辨識並閱讀三份指定附件</span></label><label
-                class="check-item"><input class="task-checkbox" type="checkbox" data-stage="1" data-check="1"
-                  id="ck-1-1"><span class="check-text">科目、單元及 A／B 模式正確</span></label><label class="check-item"><input
-                  class="task-checkbox" type="checkbox" data-stage="1" data-check="2" id="ck-1-2"><span
-                  class="check-text">課綱學習內容與代碼可以核對</span></label><label class="check-item"><input class="task-checkbox"
-                  type="checkbox" data-stage="1" data-check="3" id="ck-1-3"><span class="check-text">分清官方文件內容與 AI
-                  推論</span></label><label class="check-item"><input class="task-checkbox" type="checkbox" data-stage="1"
-                  data-check="4" id="ck-1-4"><span class="check-text">待教師查證的項目已標示</span></label></div>
-            <div class="deliverable"><span
-                class="deliverable-icon">↗</span><span><strong>本階段成果</strong>會考及素養命題依據表＋課綱對應</span></div>
-          </section>
-        </article>
-        <article class="step-card" id="prompt-2" aria-labelledby="step-title-2">
-          <div class="step-head">
-            <div class="step-number">P2</div>
-            <div class="step-title-wrap">
-              <div class="step-topline"><span class="mode-tag ">一般對話</span><span class="time-tag">約 20 分鐘</span></div>
-              <h3 id="step-title-2">分析歷屆會考試題</h3>
-              <p class="step-description">從真實題目拆解評量目標、推理過程與干擾選項，而不是仿寫題目表面形式。</p>
-            </div>
-            <div class="stage-done" id="badge-2" aria-live="polite">尚未檢核</div>
-          </div>
-          <section class="attachment-box" aria-label="P2 附件需求">
-            <div class="box-label"><span class="mini-ico">▤</span><strong>本次附件</strong><span class="attached-count">2
-                項資料說明</span></div>
-            <div class="attachment-list"><span class="attachment-chip "><span
-                  class="file-code">A06</span><span>歷屆會考精選試題.pdf</span><span class="file-status">必備</span></span><span
-                class="attachment-chip "><span class="file-code">A07</span><span>相對應官方參考答案.pdf</span><span
-                  class="file-status">必備</span></span></div>
-            <p class="attachment-tip"><strong>上傳提醒</strong>　挑選同科 2～3 題，保留題幹、選項、圖表、年度與題號；答案需與題目一一對應。</p>
-          </section>
-          <div class="prompt-shell">
-            <div class="prompt-bar">
-              <div class="prompt-label"><span class="prompt-dot"></span>完整提示詞 <small>可直接貼至 Gemini</small></div>
-              <div class="prompt-actions"><button type="button" class="copy-btn" data-copy="2"
-                  aria-label="複製 Prompt 2 完整提示詞"><span class="copy-icon" aria-hidden="true">⧉</span><span
-                    class="copy-btn-text">複製提示詞</span></button><button type="button" class="fold-btn" data-fold="2"
-                  aria-expanded="true">收合</button></div>
-            </div>
-            <pre class="prompt-text" id="prompt-text-2">【本次附件】
-A06：歷屆會考精選試題
-A07：對應的官方參考答案
-
-請先確認附件中能辨識完整題幹、選項、必要圖表及答案。若有內容缺漏，請先指出。
-
-接下來請擔任「國中會考試題分析研究員」。
-
-請根據本次上傳的歷屆試題，結合前面建立的官方命題依據，分析其設計特色。
-
-【逐題分析內容】
-
-1. 這題主要評量什麼能力？
-2. 對應哪些學科知識或學習表現？
-3. 使用什麼情境、資料或文本？
-4. 學生需要經過哪些思考步驟？
-5. 正確答案的判斷依據是什麼？
-6. 錯誤選項可能反映什麼迷思？
-7. 題目有哪些值得參考的素養命題技巧？
-8. 哪些技巧可以應用於我目前的教學單元？
-
-【命題模式調整】
-
-模式 A：
-請指出這些命題技巧如何調整，才能適用於我指定年級的學生。
-
-模式 B：
-請分析其中的綜合應用、概念整合及多步驟推理特徵。
-
-【輸出要求】
-
-1. 以表格逐題分析。
-2. 註明試題年度、題號及科目。
-3. 歸納五項值得借鏡的命題技巧。
-4. 區分官方提供的答案與 AI 推論出的命題意圖。
-5. 不直接仿寫、改寫或複製原題。
-
-【本階段檢核】
-
-請在最後確認：
-□ 分析題目與附件一致
-□ 答案與官方參考答案一致
-□ 能具體說明各題評量的能力
-□ 沒有把「題目很長」視為素養命題標準
-□ 已提出適用於本單元的命題技巧
-
-本階段只分析試題，不要產生新題目。</pre>
-          </div>
-          <section class="check-section" aria-label="P2 教師檢核">
-            <div class="check-heading">
-              <div><span class="check-heading-ico">✓</span><strong>教師檢核</strong>
-                <p>實際檢查 Gemini 產出後，再勾選通過項目。</p>
-              </div><span class="check-counter" id="count-2">0 / 5</span>
-            </div>
-            <div class="checks-grid"><label class="check-item"><input class="task-checkbox" type="checkbox"
-                  data-stage="2" data-check="0" id="ck-2-0"><span class="check-text">試題、年度、題號與附件一致</span></label><label
-                class="check-item"><input class="task-checkbox" type="checkbox" data-stage="2" data-check="1"
-                  id="ck-2-1"><span class="check-text">正確答案與官方參考答案相符</span></label><label class="check-item"><input
-                  class="task-checkbox" type="checkbox" data-stage="2" data-check="2" id="ck-2-2"><span
-                  class="check-text">能清楚說明每題所評量的能力</span></label><label class="check-item"><input class="task-checkbox"
-                  type="checkbox" data-stage="2" data-check="3" id="ck-2-3"><span
-                  class="check-text">沒有把題目篇幅當成素養標準</span></label><label class="check-item"><input class="task-checkbox"
-                  type="checkbox" data-stage="2" data-check="4" id="ck-2-4"><span
-                  class="check-text">至少找出一項可應用在本單元的技巧</span></label></div>
-            <div class="deliverable"><span
-                class="deliverable-icon">↗</span><span><strong>本階段成果</strong>歷屆試題命題分析表＋五項可借鏡技巧</span></div>
-          </section>
-        </article>
-        <article class="step-card" id="prompt-3" aria-labelledby="step-title-3">
-          <div class="step-head">
-            <div class="step-number">P3</div>
-            <div class="step-title-wrap">
-              <div class="step-topline"><span class="mode-tag ">一般對話</span><span class="time-tag">約 20 分鐘</span></div>
-              <h3 id="step-title-3">建立五題素養命題藍圖</h3>
-              <p class="step-description">參考國教院命題研發方法，先規劃五題的評量目標、題型與難度，再開始找素材。</p>
-            </div>
-            <div class="stage-done" id="badge-3" aria-live="polite">尚未檢核</div>
-          </div>
-          <section class="attachment-box" aria-label="P3 附件需求">
-            <div class="box-label"><span class="mini-ico">▤</span><strong>本次附件</strong><span class="attached-count">1
-                項資料說明</span></div>
-            <div class="attachment-list"><span class="attachment-chip "><span
-                  class="file-code">A03</span><span>四步驟打造素養導向試題.pdf</span><span class="file-status">必備</span></span>
-            </div>
-            <p class="attachment-tip"><strong>上傳提醒</strong>　這份資料以數學為例介紹四步驟；請提醒學員運用原理，依國文、英語、社會、自然等學科特性調整。</p>
-          </section>
-          <div class="prompt-shell">
-            <div class="prompt-bar">
-              <div class="prompt-label"><span class="prompt-dot"></span>完整提示詞 <small>可直接貼至 Gemini</small></div>
-              <div class="prompt-actions"><button type="button" class="copy-btn" data-copy="3"
-                  aria-label="複製 Prompt 3 完整提示詞"><span class="copy-icon" aria-hidden="true">⧉</span><span
-                    class="copy-btn-text">複製提示詞</span></button><button type="button" class="fold-btn" data-fold="3"
-                  aria-expanded="true">收合</button></div>
-            </div>
-            <pre class="prompt-text" id="prompt-text-3">【本次附件】
-A03：四步驟打造素養導向試題
-
-請先閱讀本次上傳的命題方法資料。
-
-接下來，請根據我們前面已經建立的：
-
-1. 命題設定卡
-2. 官方會考命題原則
-3. 素養導向紙筆評量要素
-4. 學科課綱及單元內容
-5. 歷屆試題分析結果
-
-規劃五道原創素養選擇題的命題藍圖。
-
-【命題方法】
-
-請參考以下四個步驟：
-
-第一步：蒐集並整理情境相關資訊。
-第二步：找出有需求、有目的或涉及迷思的問題。
-第三步：確認問題背後的學科概念與評量能力。
-第四步：選擇適合評量目標的題型。
-
-請依照我任教學科的特性調整上述方法，不要機械式套用數學範例。
-
-【命題規模】
-
-共 5 題，每題四選一。
-
-可以是獨立單題，也可以組成共用素材的題組。
-
-【難度模式】
-
-如果我選擇模式 A：
-建議規劃：
-- 基本理解 1 題
-- 情境應用 2 題
-- 分析或推理 2 題
-
-所有題目必須符合指定年段及已學內容。
-
-如果我選擇模式 B：
-建議規劃：
-- 知識應用 1 題
-- 分析推理 2 題
-- 多概念或多步驟整合 2 題
-
-以指定單元為核心，可結合國中第四學習階段相關學習內容。
-
-上述比例只是研習建議，不是正式會考固定比例；如學科特性不適合，請說明並合理調整。
-
-【命題藍圖】
-
-請為每題規劃：
-
-1. 題號
-2. 評量目標
-3. 課綱對應
-4. 預定情境或素材
-5. 題型（單題／題組）
-6. 預期解題歷程
-7. 學生常見迷思
-8. 認知需求及預估難度
-9. 是否仍需蒐集資料
-
-請以表格呈現五題藍圖。
-
-【本階段檢核】
-
-最後請檢查：
-□ 五題都有明確的評量目標
-□ 沒有大量重複評量相同概念
-□ 難度符合 A／B 模式
-□ 情境與學科能力有實質關係
-□ 題組之間不會相互洩漏答案
-□ 已列出尚需蒐集的資料
-
-目前只完成命題藍圖，不要產生正式題目。</pre>
-          </div>
-          <section class="check-section" aria-label="P3 教師檢核">
-            <div class="check-heading">
-              <div><span class="check-heading-ico">✓</span><strong>教師檢核</strong>
-                <p>實際檢查 Gemini 產出後，再勾選通過項目。</p>
-              </div><span class="check-counter" id="count-3">0 / 6</span>
-            </div>
-            <div class="checks-grid"><label class="check-item"><input class="task-checkbox" type="checkbox"
-                  data-stage="3" data-check="0" id="ck-3-0"><span class="check-text">五題都有不同且具體的評量目標</span></label><label
-                class="check-item"><input class="task-checkbox" type="checkbox" data-stage="3" data-check="1"
-                  id="ck-3-1"><span class="check-text">沒有過度集中考相同概念</span></label><label class="check-item"><input
-                  class="task-checkbox" type="checkbox" data-stage="3" data-check="2" id="ck-3-2"><span
-                  class="check-text">難度與 A／B 模式一致</span></label><label class="check-item"><input class="task-checkbox"
-                  type="checkbox" data-stage="3" data-check="3" id="ck-3-3"><span
-                  class="check-text">情境與學科能力確有實質關係</span></label><label class="check-item"><input class="task-checkbox"
-                  type="checkbox" data-stage="3" data-check="4" id="ck-3-4"><span
-                  class="check-text">題目配置沒有互相洩漏答案</span></label><label class="check-item"><input class="task-checkbox"
-                  type="checkbox" data-stage="3" data-check="5" id="ck-3-5"><span
-                  class="check-text">已列出尚待蒐集的素材</span></label></div>
-            <div class="deliverable"><span class="deliverable-icon">↗</span><span><strong>本階段成果</strong>五題命題藍圖</span>
-            </div>
-          </section>
-        </article>
-        <article class="step-card" id="prompt-4" aria-labelledby="step-title-4">
-          <div class="step-head">
-            <div class="step-number">P4</div>
-            <div class="step-title-wrap">
-              <div class="step-topline"><span class="mode-tag ">一般對話＋搜尋</span><span class="time-tag">約 20 分鐘</span>
+      <!-- Right Main Content: Active Prompt Card with 3 Sections -->
+      <section class="lg:col-span-8 space-y-6" id="prompt-content-view">
+        
+        <!-- Step Header Banner -->
+        <div class="bg-gradient-to-r from-white via-cyan-50/50 to-blue-50/60 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-800/70 border border-slate-200/90 dark:border-slate-700/80 rounded-3xl p-6 sm:p-8 shadow-xl dark:shadow-2xl relative overflow-hidden transition-colors duration-200">
+          
+          <!-- Decorative Background Elements -->
+          <div class="absolute -right-8 -top-8 w-40 h-40 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none"></div>
+          <div class="absolute right-12 bottom-0 w-32 h-32 bg-purple-500/10 rounded-full blur-xl pointer-events-none"></div>
+
+          <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-100 dark:bg-cyan-950/80 border border-cyan-300 dark:border-cyan-800/80 text-cyan-800 dark:text-cyan-300 text-xs font-bold tracking-wider mb-2">
+                <span class="w-2 h-2 rounded-full bg-cyan-500 dark:bg-cyan-400 animate-pulse"></span>
+                <span x-text="'第 ' + (currentStepIndex + 1) + ' 階段 · 共 ' + prompts.length + ' 個步驟'"></span>
               </div>
-              <h3 id="step-title-4">蒐集與查證命題素材</h3>
-              <p class="step-description">先找可靠素材、比較適用性，再由教師查證與確認；不能把 AI 搜尋結果直接當作事實。</p>
+              <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight" x-text="currentPrompt.title"></h2>
             </div>
-            <div class="stage-done" id="badge-4" aria-live="polite">尚未檢核</div>
+
+            <!-- Completion Status Pill -->
+            <div 
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl border text-sm font-bold flex-shrink-0 self-start sm:self-auto transition-all shadow-sm"
+              :class="isStepCompleted(currentPrompt.id) 
+                ? 'bg-emerald-100 border-emerald-300 text-emerald-800 dark:bg-emerald-950/80 dark:border-emerald-600/80 dark:text-emerald-300 dark:shadow-neon-emerald/30' 
+                : 'bg-white dark:bg-slate-950/70 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'"
+            >
+              <template x-if="isStepCompleted(currentPrompt.id)">
+                <span class="flex items-center gap-1.5">
+                  <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>本階段已完成檢核</span>
+                </span>
+              </template>
+              <template x-if="!isStepCompleted(currentPrompt.id)">
+                <span class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                  <span x-text="'檢核進行中 (' + getStepCheckedCount(currentPrompt.id) + '/' + currentPrompt.checklist.length + ')'"></span>
+                </span>
+              </template>
+            </div>
           </div>
-          <section class="attachment-box" aria-label="P4 附件需求">
-            <div class="box-label"><span class="mini-ico">▤</span><strong>本次附件</strong><span class="attached-count">1
-                項資料說明</span></div>
-            <div class="attachment-list"><span class="attachment-chip "><span
-                  class="file-code">B03</span><span>單元命題素材.pdf／圖片／資料表</span><span
-                  class="file-status">有素材則上傳</span></span></div>
-            <p class="attachment-tip"><strong>上傳提醒</strong>　老師手邊有教材就先附；沒有則先讓 Gemini 搜尋，教師開啟原始來源核對後，再提供選定素材。</p>
-          </section>
-          <div class="prompt-shell">
-            <div class="prompt-bar">
-              <div class="prompt-label"><span class="prompt-dot"></span>完整提示詞 <small>可直接貼至 Gemini</small></div>
-              <div class="prompt-actions"><button type="button" class="copy-btn" data-copy="4"
-                  aria-label="複製 Prompt 4 完整提示詞"><span class="copy-icon" aria-hidden="true">⧉</span><span
-                    class="copy-btn-text">複製提示詞</span></button><button type="button" class="fold-btn" data-fold="4"
-                  aria-expanded="true">收合</button></div>
-            </div>
-            <pre class="prompt-text" id="prompt-text-4">【本次附件】
-B03：單元命題素材（選用）
+        </div>
 
-如果我已經上傳素材，請優先分析附件。
-如果尚未上傳，請先進行資料搜尋。
-
-現在請根據前面建立的五題命題藍圖，協助我蒐集適合的命題素材。
-
-【素材類型】
-
-可以使用：
-- 真實生活情境
-- 政府公開資料
-- 統計數據與圖表
-- 地圖、圖片與實驗資料
-- 新聞或科普文章
-- 合理的學科探究情境
-
-【素材選擇原則】
-
-1. 素材與教學單元直接相關。
-2. 能支持五題命題藍圖的評量目標。
-3. 情境與需要評量的學科能力有實質關聯。
-4. 資料具有可信來源。
-5. 不得編造真實事件、網址或統計數據。
-6. 必要時可以使用模擬資料，但必須明確標示。
-7. 不得為了增加閱讀量而加入無關資訊。
-8. 素材應符合選定的 A／B 命題模式。
-
-【工作任務】
-
-請提出三種適合本單元的命題素材方向。
-
-逐一說明：
-1. 素材名稱
-2. 內容摘要
-3. 原始來源與網址
-4. 適合評量的能力
-5. 可對應的命題藍圖題號
-6. 使用素材時的限制
-7. 尚需人工確認的資料
-
-請以表格比較，並推薦最適合的素材。
-
-【重要限制】
-
-如果無法確認資料來源，請標示待查證。
-
-如果原始素材涉及著作權，請提醒我，不要直接大量複製到後續公開網站。
-
-【本階段檢核】
-
-請確認：
-□ 素材符合教學單元
-□ 資料來源可以查證
-□ 素材能支持命題目標
-□ 符合 A／B 模式
-□ 沒有明顯的事實錯誤
-□ 已區分真實資料與模擬資料
-
-請等待我確認素材後，再進入正式命題。</pre>
-          </div>
-          <section class="check-section" aria-label="P4 教師檢核">
-            <div class="check-heading">
-              <div><span class="check-heading-ico">✓</span><strong>教師檢核</strong>
-                <p>實際檢查 Gemini 產出後，再勾選通過項目。</p>
-              </div><span class="check-counter" id="count-4">0 / 6</span>
-            </div>
-            <div class="checks-grid"><label class="check-item"><input class="task-checkbox" type="checkbox"
-                  data-stage="4" data-check="0" id="ck-4-0"><span class="check-text">素材與指定單元直接相關</span></label><label
-                class="check-item"><input class="task-checkbox" type="checkbox" data-stage="4" data-check="1"
-                  id="ck-4-1"><span class="check-text">原始來源已由教師查證</span></label><label class="check-item"><input
-                  class="task-checkbox" type="checkbox" data-stage="4" data-check="2" id="ck-4-2"><span
-                  class="check-text">可支援五題的評量目標</span></label><label class="check-item"><input class="task-checkbox"
-                  type="checkbox" data-stage="4" data-check="3" id="ck-4-3"><span class="check-text">符合選定的 A／B
-                  模式</span></label><label class="check-item"><input class="task-checkbox" type="checkbox" data-stage="4"
-                  data-check="4" id="ck-4-4"><span class="check-text">數據、圖表與單位無明顯錯誤</span></label><label
-                class="check-item"><input class="task-checkbox" type="checkbox" data-stage="4" data-check="5"
-                  id="ck-4-5"><span class="check-text">已區分真實與模擬資料並確認引用限制</span></label></div>
-            <div class="deliverable"><span
-                class="deliverable-icon">↗</span><span><strong>本階段成果</strong>教師已確認的命題素材</span></div>
-          </section>
-        </article>
-        <article class="step-card" id="prompt-5" aria-labelledby="step-title-5">
-          <div class="step-head">
-            <div class="step-number">P5</div>
-            <div class="step-title-wrap">
-              <div class="step-topline"><span class="mode-tag ">一般對話</span><span class="time-tag">約 30 分鐘</span></div>
-              <h3 id="step-title-5">正式產生五題原創試題</h3>
-              <p class="step-description">按照前面確認的藍圖與素材出題，完整產生學生版、教師版及自我檢查表。</p>
-            </div>
-            <div class="stage-done" id="badge-5" aria-live="polite">尚未檢核</div>
-          </div>
-          <section class="attachment-box" aria-label="P5 附件需求">
-            <div class="box-label"><span class="mini-ico">▤</span><strong>本次附件</strong><span class="attached-count">2
-                項資料說明</span></div>
-            <div class="attachment-list"><span class="attachment-chip chip-muted"><span
-                  class="file-code">—</span><span>沿用 P4 已確認素材</span><span class="file-status">不需新增</span></span><span
-                class="attachment-chip "><span class="file-code">B03</span><span>若前階段尚未成功上傳，於此補上</span><span
-                  class="file-status">視情況</span></span></div>
-            <p class="attachment-tip"><strong>上傳提醒</strong>　本階段原則上不新增附件；若 P4 選定素材未在對話中提供完整，再補上 B03。</p>
-          </section>
-          <div class="prompt-shell">
-            <div class="prompt-bar">
-              <div class="prompt-label"><span class="prompt-dot"></span>完整提示詞 <small>可直接貼至 Gemini</small></div>
-              <div class="prompt-actions"><button type="button" class="copy-btn" data-copy="5"
-                  aria-label="複製 Prompt 5 完整提示詞"><span class="copy-icon" aria-hidden="true">⧉</span><span
-                    class="copy-btn-text">複製提示詞</span></button><button type="button" class="fold-btn" data-fold="5"
-                  aria-expanded="true">收合</button></div>
-            </div>
-            <pre class="prompt-text" id="prompt-text-5">【附件確認】
-本階段原則上不需新增檔案。
-
-請使用前面已確認的命題素材及五題命題藍圖。
-
-如果缺少教師確認的必要資料，請先指出，不要自行編造。
-
-現在請正式設計五道原創素養試題。
-
-【命題依據】
-
-必須沿用：
-1. Prompt 0 的命題設定卡及 A／B 模式。
-2. 官方會考命題原則。
-3. 素養導向紙筆評量要素。
-4. 本單元課綱及教學內容。
-5. 歷屆試題分析結果。
-6. 五題命題藍圖。
-7. 已確認的命題素材。
-
-【命題要求】
-
-1. 共 5 題，每題四選一。
-2. 每題只有一個正確答案。
-3. 每題都要有明確的評量目標。
-4. 符合選定的 A／B 難度模式。
-5. 以學科知識的理解、應用、分析及推理為核心。
-6. 可使用獨立單題或共用素材的題組。
-7. 題幹清楚，條件充分。
-8. 錯誤選項合理，能反映學生可能的迷思。
-9. 避免陷阱題、歧義題及無關的冗長情境。
-10. 不直接抄寫或只修改歷屆試題的數字。
-11. 不得擅自改動已查證的資料。
-12. 不得讓某題的答案直接洩漏其他題答案。
-
-【模式限制】
-
-模式 A：
-五題必須符合指定年級及已學習的知識範圍。
-
-模式 B：
-五題可以整合國中第四學習階段的相關概念，但要以指定單元為核心，並註明可能涉及的跨單元知識。
-
-【輸出格式】
-
-第一部分：學生版
-- 評量標題
-- 必要的共用素材
-- 五道完整題目
-- 每題 A、B、C、D 四個選項
-- 不顯示正確答案
-
-第二部分：教師版
-每題提供：
-- 正確答案
-- 詳細解析
-- 四個選項的正誤分析
-- 評量目標
-- 課綱對應
-- 認知需求及預估難度
-- 學生可能的迷思
-- 素材來源
-
-第三部分：命題自我檢查
-請以表格逐題確認：
-
-□ 題目符合指定單元
-□ 符合 A／B 模式
-□ 答案唯一且推理正確
-□ 題幹及選項沒有歧義
-□ 評量目標明確
-□ 題目間沒有重複或互相提示
-
-請輸出完整的五題初稿，不要只提供構想。
-
-這些試題目前屬於 AI 初稿，尚未經教師審題，不得宣稱符合正式會考命題審查標準。</pre>
-          </div>
-          <section class="check-section" aria-label="P5 教師檢核">
-            <div class="check-heading">
-              <div><span class="check-heading-ico">✓</span><strong>教師檢核</strong>
-                <p>實際檢查 Gemini 產出後，再勾選通過項目。</p>
-              </div><span class="check-counter" id="count-5">0 / 5</span>
-            </div>
-            <div class="checks-grid"><label class="check-item"><input class="task-checkbox" type="checkbox"
-                  data-stage="5" data-check="0" id="ck-5-0"><span class="check-text">完整產生五題，每題四選一</span></label><label
-                class="check-item"><input class="task-checkbox" type="checkbox" data-stage="5" data-check="1"
-                  id="ck-5-1"><span class="check-text">學生版未洩漏答案</span></label><label class="check-item"><input
-                  class="task-checkbox" type="checkbox" data-stage="5" data-check="2" id="ck-5-2"><span
-                  class="check-text">教師版五題皆附詳細解析</span></label><label class="check-item"><input class="task-checkbox"
-                  type="checkbox" data-stage="5" data-check="3" id="ck-5-3"><span
-                  class="check-text">教師已獨立作答並確認正解唯一</span></label><label class="check-item"><input class="task-checkbox"
-                  type="checkbox" data-stage="5" data-check="4" id="ck-5-4"><span
-                  class="check-text">題目符合命題藍圖且無明顯互相提示</span></label></div>
-            <div class="deliverable"><span
-                class="deliverable-icon">↗</span><span><strong>本階段成果</strong>五題初稿：學生版＋教師版＋自我檢核</span></div>
-          </section>
-        </article>
-        <article class="step-card" id="prompt-6" aria-labelledby="step-title-6">
-          <div class="step-head">
-            <div class="step-number">P6</div>
-            <div class="step-title-wrap">
-              <div class="step-topline"><span class="mode-tag ">一般對話＋人工審題</span><span class="time-tag">約 30 分鐘</span>
+        <!-- ============================================== -->
+        <!-- 項目一：必備來源 (Required Sources) -->
+        <!-- ============================================== -->
+        <div class="bg-white/95 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-6 sm:p-7 shadow-xl dark:shadow-2xl backdrop-blur-md transition-colors duration-200">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-200 dark:border-slate-800/80">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-600 dark:text-amber-400 font-black text-sm">
+                1
               </div>
-              <h3 id="step-title-6">命題審查、修正與定稿</h3>
-              <p class="step-description">內建完整 B04 十項審查規準，Gemini 先審查，教師再做專業確認，產生兩份 Canvas 交接資料。</p>
+              <div>
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white tracking-wide">必備來源</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">在 Gemini Notebook 或對話中必須勾選的來源資料</p>
+              </div>
             </div>
-            <div class="stage-done" id="badge-6" aria-live="polite">尚未檢核</div>
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-amber-100 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300 border border-amber-300 dark:border-amber-800/60">
+              必須先確認勾選
+            </span>
           </div>
-          <section class="attachment-box" aria-label="P6 附件需求">
-            <div class="box-label"><span class="mini-ico">▤</span><strong>本次附件</strong><span class="attached-count">2
-                項資料說明</span></div>
-            <div class="attachment-list"><span class="attachment-chip "><span
-                  class="file-code">A04</span><span>選擇題命題原則與不良題範例.pdf</span><span
-                  class="file-status">必備</span></span><span class="attachment-chip chip-muted"><span
-                  class="file-code">B04</span><span>命題審查表已內建提示詞</span><span class="file-status">免上傳</span></span></div>
-            <p class="attachment-tip"><strong>上傳提醒</strong>　只需上傳官方 A04；自編 B04 全文已放入下方提示詞，不需要另外找檔案。</p>
-          </section>
-          <div class="prompt-shell">
-            <div class="prompt-bar">
-              <div class="prompt-label"><span class="prompt-dot"></span>完整提示詞 <small>可直接貼至 Gemini</small></div>
-              <div class="prompt-actions"><button type="button" class="copy-btn" data-copy="6"
-                  aria-label="複製 Prompt 6 完整提示詞"><span class="copy-icon" aria-hidden="true">⧉</span><span
-                    class="copy-btn-text">複製提示詞</span></button><button type="button" class="fold-btn" data-fold="6"
-                  aria-expanded="true">收合</button></div>
-            </div>
-            <pre class="prompt-text" id="prompt-text-6">【本次附件】
-A04：選擇題命題原則與不良題範例
 
-請先閱讀本次上傳的官方資料。
-
-本階段不需要另外上傳 B04 命題審查表，因為完整的研習用審查表已經附在以下提示詞中。
-
-現在請擔任「國中素養導向評量命題審查助理」，嚴格審查前面完成的五道原創試題。
-
-請使用官方資料、先前已確認的課綱與命題設定，以及以下 B04 審查表進行評估。
-
-================================
-【B04｜命題品質審查表】
-================================
-
-本表為教師研習使用的自編審查工具，並非官方會考認證標準。
-
-每項指標採三級評分：
-
-2 分：符合要求，有明確證據支持。
-1 分：部分符合，需要修正或補充確認。
-0 分：不符合、存在重大問題，或欠缺足夠證據。
-
-每題最高 20 分。
-
-【審查指標】
-
-01｜課綱適切性
-試題內容與學習表現、學習內容及評量目標是否一致？
-是否存在無法查證的課綱代碼？
-
-02｜命題模式適切性
-是否符合已選定的 A／B 模式？
-模式 A 是否涉及尚未學過的知識？
-模式 B 是否仍在國中第四學習階段範圍內？
-
-03｜素養導向與評量效度
-題目是否真正評量預定的學科能力？
-情境、資料或問題是否具有實質意義？
-是否只是在傳統題目前加上故事？
-
-04｜學科知識與素材正確性
-概念、事實、數據、圖表、單位及引用是否正確？
-解題歷程是否符合學科原理？
-是否有未查證的內容？
-
-05｜答案唯一性
-是否只有一個正確答案？
-正解是否有充分理由？
-是否存在其他合理答案？
-
-06｜干擾選項品質
-三個錯誤選項是否合理？
-是否能反映學生常見迷思或推理錯誤？
-是否有明顯荒謬、過度提示或形式不一致的選項？
-
-07｜題幹與文字品質
-題意是否清楚？
-條件是否完整？
-是否存在歧義、模糊敘述、冗長文字或不必要的否定問法？
-
-08｜公平性與適切性
-是否符合評量對象的閱讀與認知程度？
-是否存在文化、性別、社經背景或其他不必要的偏誤？
-是否需要無關的生活經驗才能作答？
-
-09｜題目獨立性與整體配置
-不同題目是否重複評量相同內容？
-某一題是否透露另一題的答案？
-五題是否涵蓋預定的不同評量目標？
-
-10｜原創性與使用合規
-是否直接抄襲或僅表面改寫歷屆試題？
-素材是否具有必要的來源說明？
-後續公開使用是否有著作權疑慮？
-
-================================
-【第一階段：逐題審查】
-================================
-
-請針對五道題目，依照上述 10 項指標逐項評估。
-
-請以表格呈現：
-
-- 題號
-- 各項審查分數
-- 總分（20 分）
-- 發現的主要問題
-- 必須修正的內容
-- 是否仍需教師確認
-
-所有分數都必須附有判斷依據。
-
-不能只給分數而不說明原因。
-
-如果資料不足，請標示「待查證」，不要假裝已確認正確。
-
-================================
-【第二階段：重大問題檢查】
-================================
-
-以下四項列為優先修正項目：
-
-1. 課綱適切性
-2. 命題模式適切性
-3. 學科知識與素材正確性
-4. 答案唯一性
-
-只要其中任何一項未獲得 2 分，就不得建議直接定稿。
-
-其他指標如有 0 分，也必須修正。
-
-請區分：
-- 重大問題
-- 一般修正
-- 文字或格式優化
-
-================================
-【第三階段：修正試題】
-================================
-
-請先列出每題的修正建議，再產生完整修正版。
-
-修正時必須：
-1. 保留原本的評量目標。
-2. 改善題幹及干擾選項。
-3. 修正事實、概念或答案問題。
-4. 避免產生新的歧義。
-5. 確保修改後的答案與解析同步更新。
-6. 仍然符合 A／B 命題模式。
-
-請重新輸出：
-A. 學生版五題
-B. 教師版五題答案與完整解析
-
-================================
-【第四階段：定稿交接資料】
-================================
-
-請整理一份「B05 五題定稿與答案」。
-
-內容必須包括：
-1. 學科、年級、單元、A／B 模式。
-2. 完整的共用素材。
-3. 五題題幹。
-4. 每題四個選項。
-5. 五題正確答案。
-6. 逐題完整解析。
-7. 素材來源及必要備註。
-
-請以容易複製的純文字格式提供，不得省略題目內容。
-
-這份交接資料將用於下一階段的 Gemini Canvas 網站製作。
-
-另外，請從 Prompt 0 的單元分析中，整理一份簡短的「B06 單元學習摘要」，包含：
-
-- 單元核心概念
-- 三至五個重要學習重點
-- 適合練習的知識或技能
-- 學生常見迷思
-- 年級與 A／B 模式限制
-
-這份資料將作為後續遊戲網站的內容依據。
-
-================================
-【第五階段：審查結果與檢核】
-================================
-
-最後請確認：
-
-□ 已審查完整五題
-□ 十項指標均有評估
-□ 已指出重大問題
-□ 已同步更新修正版答案與解析
-□ 已產生完整 B05 定稿交接資料
-□ 已整理 B06 單元學習摘要
-□ 已列出仍需教師人工確認的問題
-
-請提醒我：
-本次 AI 審查只是輔助，正式定稿仍須由學科教師確認。
-
-不要把 AI 自我評分視為正式會考的命題品質認證。</pre>
+          <!-- Sources Tags -->
+          <div class="flex flex-wrap gap-2.5 pt-1">
+            <template x-for="src in currentPromptSources" :key="src">
+              <span class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-amber-50/80 dark:bg-slate-950 border border-amber-200 dark:border-slate-700/80 text-amber-900 dark:text-amber-200 text-sm font-semibold shadow-sm group hover:border-amber-400 dark:hover:border-amber-600/50 transition-colors">
+                <svg class="w-4 h-4 text-amber-500 dark:text-amber-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span x-text="src"></span>
+              </span>
+            </template>
           </div>
-          <section class="check-section" aria-label="P6 教師檢核">
-            <div class="check-heading">
-              <div><span class="check-heading-ico">✓</span><strong>教師檢核</strong>
-                <p>實際檢查 Gemini 產出後，再勾選通過項目。</p>
-              </div><span class="check-counter" id="count-6">0 / 6</span>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- 項目二：提示詞內容 (Prompt Content) -->
+        <!-- ============================================== -->
+        <div class="bg-white/95 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-6 sm:p-7 shadow-xl dark:shadow-2xl backdrop-blur-md relative transition-colors duration-200">
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-200 dark:border-slate-800/80">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-600 dark:text-cyan-400 font-black text-sm">
+                2
+              </div>
+              <div>
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white tracking-wide">提示詞內容</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">複製至 Gemini Notebook 的完整指令</p>
+              </div>
             </div>
-            <div class="checks-grid"><label class="check-item"><input class="task-checkbox" type="checkbox"
-                  data-stage="6" data-check="0" id="ck-6-0"><span class="check-text">已上傳並確認 A04
-                  官方資料</span></label><label class="check-item"><input class="task-checkbox" type="checkbox"
-                  data-stage="6" data-check="1" id="ck-6-1"><span class="check-text">五題都按 B04
-                  十項指標審查</span></label><label class="check-item"><input class="task-checkbox" type="checkbox"
-                  data-stage="6" data-check="2" id="ck-6-2"><span class="check-text">重大問題已修正，正解都可確認</span></label><label
-                class="check-item"><input class="task-checkbox" type="checkbox" data-stage="6" data-check="3"
-                  id="ck-6-3"><span class="check-text">已由教師或同科同儕實際試答</span></label><label class="check-item"><input
-                  class="task-checkbox" type="checkbox" data-stage="6" data-check="4" id="ck-6-4"><span
-                  class="check-text">B05 五題定稿含完整答案與解析</span></label><label class="check-item"><input
-                  class="task-checkbox" type="checkbox" data-stage="6" data-check="5" id="ck-6-5"><span
-                  class="check-text">B06 單元摘要已整理並可用於遊戲</span></label></div>
-            <div class="deliverable"><span class="deliverable-icon">↗</span><span><strong>本階段成果</strong>逐題審查報告＋B05
-                定稿題庫＋B06 單元學習摘要</span></div>
-          </section>
-        </article>
-        <article class="step-card" id="prompt-7" aria-labelledby="step-title-7">
-          <div class="step-head">
-            <div class="step-number">P7</div>
-            <div class="step-title-wrap">
-              <div class="step-topline"><span class="mode-tag canvas-tag">Gemini Canvas</span><span class="time-tag">約
-                  35 分鐘</span></div>
-              <h3 id="step-title-7">Canvas 製作五題互動測驗</h3>
-              <p class="step-description">將已經定稿的五題轉成線上可作答、能計分與顯示解析的互動網站。</p>
-            </div>
-            <div class="stage-done" id="badge-7" aria-live="polite">尚未檢核</div>
+
+            <!-- Big Copy Button with Punchy Micro-interactions -->
+            <button 
+              @click="copyCurrentPrompt()" 
+              class="px-5 py-2.5 rounded-2xl font-bold text-sm tracking-wide transition-all duration-150 flex items-center justify-center gap-2 shadow-lg active:scale-95"
+              :class="isCopied 
+                ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-neon-emerald ring-2 ring-emerald-400' 
+                : 'bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 hover:from-cyan-400 hover:to-indigo-400 text-white dark:text-slate-950 font-black shadow-neon-cyan'"
+            >
+              <template x-if="isCopied">
+                <span class="flex items-center gap-1.5">
+                  <svg class="w-5 h-5 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>已複製到剪貼簿！</span>
+                </span>
+              </template>
+              <template x-if="!isCopied">
+                <span class="flex items-center gap-1.5">
+                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+                  </svg>
+                  <span>一鍵複製提示詞</span>
+                </span>
+              </template>
+            </button>
           </div>
-          <section class="attachment-box" aria-label="P7 附件需求">
-            <div class="box-label"><span class="mini-ico">▤</span><strong>本次附件</strong><span class="attached-count">1
-                項資料說明</span></div>
-            <div class="attachment-list"><span class="attachment-chip "><span
-                  class="file-code">B05</span><span>五題定稿與答案.txt</span><span class="file-status">新對話必備</span></span>
+
+          <!-- Prompt Text Content Box: Always High Contrast & Crisp -->
+          <div class="relative group">
+            <div 
+              class="w-full rounded-2xl bg-slate-900 dark:bg-slate-950 border border-slate-700/80 dark:border-slate-800/90 p-5 sm:p-6 text-slate-100 dark:text-slate-200 leading-relaxed overflow-x-auto whitespace-pre-wrap select-text font-mono text-base max-h-[550px] overflow-y-auto ring-1 ring-slate-800 focus-within:ring-cyan-500/50 shadow-inner"
+              :class="fontSize === 'large' ? 'text-lg leading-loose' : 'text-base leading-relaxed'"
+              x-text="currentPrompt.content"
+            ></div>
+
+            <!-- Word count & hint indicator -->
+            <div class="mt-3 flex items-center justify-between text-xs text-slate-500 px-1">
+              <span x-text="'字數統計：' + currentPrompt.content.length + ' 字'"></span>
+              <span>點擊上方按鈕可直接帶走完整格式</span>
             </div>
-            <p class="attachment-tip"><strong>上傳提醒</strong>　若原對話可正確引用完整 B05 就不用重傳；新開 Canvas 對話則必須貼上或上傳 B05。</p>
-          </section>
-          <div class="prompt-shell">
-            <div class="prompt-bar">
-              <div class="prompt-label"><span class="prompt-dot"></span>完整提示詞 <small>可直接貼至 Gemini</small></div>
-              <div class="prompt-actions"><button type="button" class="copy-btn" data-copy="7"
-                  aria-label="複製 Prompt 7 完整提示詞"><span class="copy-icon" aria-hidden="true">⧉</span><span
-                    class="copy-btn-text">複製提示詞</span></button><button type="button" class="fold-btn" data-fold="7"
-                  aria-expanded="true">收合</button></div>
-            </div>
-            <pre class="prompt-text" id="prompt-text-7">【本階段附件】
-
-B05：五題定稿與答案
-
-請確認可以完整取得 B05 的內容。
-
-若目前對話中沒有完整資料，請先要求我提供，不得自行補題或重新命題。
-
-現在請使用 Gemini Canvas，把已經由教師確認的五道原創素養試題，製作成可以實際操作的互動測驗網站。
-
-【網站內容】
-
-請沿用已定稿的：
-1. 任教科目及單元。
-2. 適用年級。
-3. A／B 命題模式。
-4. 完整共用素材。
-5. 五題題幹與四個選項。
-6. 五題正確答案。
-7. 五題詳細解析。
-
-不得自行修改題幹、選項、答案、解析或重要數據。
-
-【網站設計】
-
-網站標題：
-請依據學科與單元，自動產生一個清楚、適合國中學生的名稱。
-
-使用繁體中文。
-
-整體風格簡潔、現代、容易閱讀，適合國中學生。
-
-手機、平板及電腦均可正常操作。
-
-【基本功能】
-
-1. 首頁顯示測驗名稱、單元及適用對象。
-2. 顯示完整的必要共用素材。
-3. 完整呈現五道選擇題。
-4. 每題提供 A、B、C、D 四個選項。
-5. 每題只能選擇一個答案。
-6. 未完成五題不得送出，並提示尚未作答的題號。
-7. 學生按下「送出答案」後才顯示結果。
-8. 每題 20 分，總分 100 分。
-9. 自動計算正確題數及得分。
-10. 逐題顯示答對或答錯。
-11. 顯示正確答案與完整解析。
-12. 提供「重新作答」功能。
-13. 重新作答後必須清除前次選項、得分與解析。
-
-【技術要求】
-
-1. 建立單頁互動網站。
-2. 優先使用前端程式完成。
-3. 不需要登入、資料庫或外部 API。
-4. 不使用付費 AI 功能。
-5. 不收集或儲存學生個人資料。
-6. 不依賴外部網站才能完成答題。
-7. 圖表、公式與文字必須清晰可讀。
-8. 保持手機版的良好操作體驗。
-
-【品質檢查】
-
-完成網站後，請檢查：
-□ 是否完整顯示五題？
-□ 題目內容是否與 B05 一致？
-□ 是否正確判斷每題答案？
-□ 計分是否正確？
-□ 未完成所有題目時是否能阻止送出？
-□ 答案與解析是否只在送出後出現？
-□ 重新作答能否正常運作？
-□ 手機版是否有排版問題？
-□ 是否有程式錯誤或無法操作的按鈕？
-
-可以從程式碼確認的項目，請先進行檢查。
-
-無法實際驗證的項目，請標示「待教師測試」，不得宣稱已通過。
-
-請建立完整、可預覽的互動測驗網站。
-
-如需修正程式，請直接修改，但不可擅自改變已定稿的試題。</pre>
           </div>
-          <section class="check-section" aria-label="P7 教師檢核">
-            <div class="check-heading">
-              <div><span class="check-heading-ico">✓</span><strong>教師檢核</strong>
-                <p>實際檢查 Gemini 產出後，再勾選通過項目。</p>
-              </div><span class="check-counter" id="count-7">0 / 8</span>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- 項目三：教師檢核 (Teacher Checklist) -->
+        <!-- ============================================== -->
+        <div class="bg-white/95 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-6 sm:p-7 shadow-xl dark:shadow-2xl backdrop-blur-md transition-colors duration-200">
+          
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-200 dark:border-slate-800/80">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-black text-sm">
+                3
+              </div>
+              <div>
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white tracking-wide">教師檢核</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">進入下一階段前必須逐項核對的品質指標</p>
+              </div>
             </div>
-            <div class="checks-grid"><label class="check-item"><input class="task-checkbox" type="checkbox"
-                  data-stage="7" data-check="0" id="ck-7-0"><span class="check-text">五題內容與 B05
-                  定稿完全一致</span></label><label class="check-item"><input class="task-checkbox" type="checkbox"
-                  data-stage="7" data-check="1" id="ck-7-1"><span class="check-text">全對時正確顯示 100 分</span></label><label
-                class="check-item"><input class="task-checkbox" type="checkbox" data-stage="7" data-check="2"
-                  id="ck-7-2"><span class="check-text">部分答對時分數正確</span></label><label class="check-item"><input
-                  class="task-checkbox" type="checkbox" data-stage="7" data-check="3" id="ck-7-3"><span
-                  class="check-text">未答完五題時無法送出</span></label><label class="check-item"><input class="task-checkbox"
-                  type="checkbox" data-stage="7" data-check="4" id="ck-7-4"><span
-                  class="check-text">送出後才出現答案與解析</span></label><label class="check-item"><input class="task-checkbox"
-                  type="checkbox" data-stage="7" data-check="5" id="ck-7-5"><span
-                  class="check-text">重新作答會清除狀態</span></label><label class="check-item"><input class="task-checkbox"
-                  type="checkbox" data-stage="7" data-check="6" id="ck-7-6"><span
-                  class="check-text">手機版文字與選項正常</span></label><label class="check-item"><input class="task-checkbox"
-                  type="checkbox" data-stage="7" data-check="7" id="ck-7-7"><span
-                  class="check-text">第一個測驗網站已獨立保存</span></label></div>
-            <div class="deliverable"><span class="deliverable-icon">↗</span><span><strong>本階段成果</strong>Canvas
-                作品一：五題互動測驗網站</span></div>
-          </section>
-        </article>
-        <article class="step-card" id="prompt-8" aria-labelledby="step-title-8">
-          <div class="step-head">
-            <div class="step-number">P8</div>
-            <div class="step-title-wrap">
-              <div class="step-topline"><span class="mode-tag canvas-tag">Gemini Canvas</span><span class="time-tag">約
-                  30 分鐘</span></div>
-              <h3 id="step-title-8">Canvas 製作單元學習遊戲</h3>
-              <p class="step-description">再以同一教學單元打造三關互動學習遊戲，強調學習任務、操作回饋與概念理解，不只是測驗換皮。</p>
+
+            <div class="flex items-center gap-2">
+              <span 
+                class="text-xs font-bold px-3 py-1 rounded-xl border transition-colors"
+                :class="isStepCompleted(currentPrompt.id) 
+                  ? 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950/80 dark:text-emerald-300 dark:border-emerald-700/60' 
+                  : 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'"
+                x-text="getStepCheckedCount(currentPrompt.id) + ' / ' + currentPrompt.checklist.length + ' 已勾選'"
+              ></span>
             </div>
-            <div class="stage-done" id="badge-8" aria-live="polite">尚未檢核</div>
           </div>
-          <section class="attachment-box" aria-label="P8 附件需求">
-            <div class="box-label"><span class="mini-ico">▤</span><strong>本次附件</strong><span class="attached-count">2
-                項資料說明</span></div>
-            <div class="attachment-list"><span class="attachment-chip "><span
-                  class="file-code">B06</span><span>單元學習摘要.txt</span><span class="file-status">新對話必備</span></span><span
-                class="attachment-chip "><span class="file-code">B01</span><span>原始單元教材.pdf／圖片</span><span
-                  class="file-status">需要時補充</span></span></div>
-            <p class="attachment-tip"><strong>上傳提醒</strong>　請另建 Canvas 作品，避免覆蓋 P7 測驗網站；新對話至少要帶入 B06，必要時再補 B01。</p>
-          </section>
-          <div class="prompt-shell">
-            <div class="prompt-bar">
-              <div class="prompt-label"><span class="prompt-dot"></span>完整提示詞 <small>可直接貼至 Gemini</small></div>
-              <div class="prompt-actions"><button type="button" class="copy-btn" data-copy="8"
-                  aria-label="複製 Prompt 8 完整提示詞"><span class="copy-icon" aria-hidden="true">⧉</span><span
-                    class="copy-btn-text">複製提示詞</span></button><button type="button" class="fold-btn" data-fold="8"
-                  aria-expanded="true">收合</button></div>
-            </div>
-            <pre class="prompt-text" id="prompt-text-8">【本階段附件】
 
-B06：單元學習摘要
-B01：原始教學單元教材（必要時提供）
+          <!-- Checkbox List -->
+          <div class="space-y-3">
+            <template x-for="(item, itemIndex) in currentPrompt.checklist" :key="itemIndex">
+              <label 
+                @click="toggleCheckItem(currentPrompt.id, itemIndex)"
+                class="flex items-start gap-3.5 p-4 rounded-2xl border transition-all duration-150 cursor-pointer select-none group"
+                :class="isItemChecked(currentPrompt.id, itemIndex)
+                  ? 'bg-emerald-50/90 border-emerald-300 text-slate-900 dark:bg-emerald-950/30 dark:border-emerald-700/70 dark:text-slate-100 shadow-sm' 
+                  : 'bg-slate-50/80 hover:bg-slate-100 border-slate-200/90 hover:border-slate-300 text-slate-700 dark:bg-slate-950/60 dark:hover:bg-slate-950 dark:border-slate-800/80 dark:hover:border-slate-700 dark:text-slate-300'"
+              >
+                <!-- Custom Checkbox Icon -->
+                <div 
+                  class="w-6 h-6 rounded-lg mt-0.5 flex items-center justify-center border transition-all flex-shrink-0 group-hover:scale-105"
+                  :class="isItemChecked(currentPrompt.id, itemIndex)
+                    ? 'bg-emerald-500 border-emerald-400 text-slate-950 shadow-neon-emerald/30'
+                    : 'bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 group-hover:border-slate-400 dark:group-hover:border-slate-500 text-transparent'"
+                >
+                  <svg class="w-4 h-4 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
 
-請先確認你已取得：
-
-1. 任教科目
-2. 任教年級
-3. 目前教學單元
-4. 單元核心概念
-5. 重要學習內容
-6. A／B 命題模式
-7. 學生常見迷思或學習困難
-
-如果目前對話已有這些資訊，請直接沿用。
-若缺少重要內容，請要求我補充，不要自行編造教材內容。
-
-================================
-【你的角色】
-================================
-
-你是一位熟悉國中課程、遊戲化學習、教學設計及網頁互動程式開發的專家。
-
-現在請使用 Gemini Canvas，以我目前的教學單元為核心，製作一個能讓國中學生實際操作的「互動學習遊戲網站」。
-
-這是新的遊戲作品，不是前一個五題測驗網站的修改版。
-
-請保留原本的測驗網站，不要覆蓋或破壞它。
-
-================================
-【第一部分：分析遊戲的學習目標】
-================================
-
-請先根據教學單元內容，確認：
-
-1. 這個單元最重要的核心概念。
-2. 學生需要練習的知識或技能。
-3. 學生可能出現的迷思或錯誤。
-4. 最適合透過遊戲練習的學習內容。
-5. 適合本年級學生的認知需求。
-
-如果選擇模式 A：
-遊戲內容應符合指定年級與目前單元的學習程度，不得要求學生運用尚未教授的概念。
-
-如果選擇模式 B：
-遊戲可以加入跨單元整合與進階推理挑戰，但必須保持在國中第四學習階段的學習範圍內。
-
-================================
-【第二部分：決定最適合的遊戲機制】
-================================
-
-請根據單元性質，自行選擇最適合的一種主要遊戲玩法。
-
-可以參考：
-- 闖關解謎
-- 知識分類挑戰
-- 配對與排序
-- 情境決策
-- 虛擬實驗
-- 任務冒險
-- 資料分析與推理遊戲
-
-請不要要求我在多種玩法中選擇。
-
-請運用你的教學設計專業，選擇最能幫助學生理解本單元的一種玩法，並簡短說明：
-
-1. 遊戲名稱
-2. 學習目標
-3. 遊戲故事或任務情境
-4. 核心互動方式
-5. 預期學習效果
-
-不要只是將前面的五道選擇題，加上分數、角色或動畫後稱為遊戲。
-
-================================
-【第三部分：遊戲內容設計】
-================================
-
-請規劃三個逐步進階的學習關卡。
-
-第一關：核心概念
-讓學生認識、辨識或操作本單元的重要知識。
-
-第二關：知識應用
-讓學生在具體情境中，運用相關概念完成任務。
-
-第三關：分析與挑戰
-讓學生透過判斷、推理、整合資訊或解決問題完成挑戰。
-
-每關至少包含一項學生必須主動操作的任務。
-
-互動形式應符合學科特性，可以結合點選、配對、分類、排序、參數操作或情境選擇等方式。
-
-同一款遊戲盡量包含兩種有學習意義的互動形式，但不可為了增加形式而造成操作困難。
-
-【關卡設計原則】
-
-1. 內容必須與單元學習目標直接相關。
-2. 任務規則清楚。
-3. 學生可以自行操作。
-4. 作答或操作結果能得到適當回饋。
-5. 答錯後能獲得提示並重新嘗試。
-6. 避免只是測試記憶力或反應速度。
-7. 不使用未查證的學科資訊。
-8. 遊戲任務、正解及提示必須具備合理的學科依據。
-
-================================
-【第四部分：網站功能】
-================================
-
-請製作完整的互動遊戲網站，包含：
-
-一、遊戲首頁
-- 遊戲名稱
-- 單元名稱
-- 適用年級
-- 簡短遊戲介紹
-- 開始遊戲按鈕
-
-二、關卡系統
-- 共三個學習關卡
-- 顯示目前關卡
-- 顯示學習任務
-- 清楚的操作說明
-- 完成當前關卡才能進入下一關
-
-三、互動操作
-- 使用學生容易理解的操作方式
-- 手機和電腦都可以玩
-- 所有按鈕都必須有實際功能
-- 若使用拖曳操作，須提供手機可用的替代方式
-- 不依賴複雜設備或特殊權限
-
-四、學習回饋
-- 回答或操作正確時，提供正向回饋
-- 發生錯誤時，提供具體提示
-- 不只顯示「答錯了」
-- 必要時說明相關概念
-- 讓學生可以再次嘗試
-
-五、遊戲成果
-- 顯示完成的關卡
-- 顯示合理的得分或成就
-- 完成三關後顯示過關畫面
-- 提供重新挑戰功能
-- 顯示本次練習的重要學習重點
-
-================================
-【第五部分：網站視覺】
-================================
-
-請使用：
-
-1. 繁體中文介面。
-2. 適合國中學生的視覺設計。
-3. 活潑但不幼稚的風格。
-4. 清楚的文字、按鈕與操作提示。
-5. 適當的遊戲感與成就感。
-6. 簡潔的畫面與明確的任務引導。
-7. 支援手機、平板及電腦。
-8. 不使用容易造成注意力干擾的過度動畫。
-
-可以使用簡單的圖形、圖示、CSS 或 SVG 建立遊戲視覺。
-
-不需要製作大型 3D 遊戲。
-
-================================
-【第六部分：技術限制】
-================================
-
-1. 使用 Gemini Canvas 製作可預覽的互動網站。
-2. 優先使用單頁前端程式。
-3. 不需要額外資料庫。
-4. 不需要外部 API。
-5. 不需要付費 AI 功能。
-6. 不需要學生登入。
-7. 不收集學生姓名或其他個人資料。
-8. 不依賴外部服務才能完成主要遊戲流程。
-9. 避免使用有授權疑慮的角色、圖片或音樂。
-10. 保持程式簡潔，方便後續修改。
-
-================================
-【第七部分：完成後的品質檢查】
-================================
-
-請檢查：
-
-□ 遊戲內容符合指定教學單元。
-□ 遊戲難度符合 A／B 模式。
-□ 三個關卡都有明確學習目標。
-□ 每關都有可以實際操作的任務。
-□ 遊戲不是單純的五題測驗換皮。
-□ 遊戲中的學科答案或判斷依據正確。
-□ 學生可以正常進入下一關。
-□ 正確與錯誤操作都有適當回饋。
-□ 可以完成整個遊戲。
-□ 可以重新開始遊戲。
-□ 手機版可以正常操作。
-□ 沒有無作用的按鈕或明顯程式錯誤。
-
-請先檢查程式邏輯及可驗證的功能。
-
-無法實際測試的項目，請列為「待教師操作確認」。
-
-================================
-【最終輸出】
-================================
-
-請先簡短說明你選定的遊戲玩法及理由，接著直接在 Canvas 中製作完整遊戲。
-
-完成後請提供：
-
-1. 可操作的遊戲預覽。
-2. 三關學習目標與玩法說明。
-3. 各關正確判斷依據及回饋設計。
-4. 程式功能自我檢查結果。
-5. 教師還需要親自測試的項目。
-
-請以能在免費版 Gemini Canvas 中實際運作為優先，不要為了增加功能而讓遊戲過度複雜。</pre>
+                <!-- Checklist Text -->
+                <div class="flex-1">
+                  <p 
+                    class="font-medium tracking-wide"
+                    :class="[
+                      fontSize === 'large' ? 'text-lg' : 'text-base',
+                      isItemChecked(currentPrompt.id, itemIndex) 
+                        ? 'text-emerald-800 dark:text-emerald-200 line-through decoration-emerald-500/50' 
+                        : 'text-slate-800 dark:text-slate-200'
+                    ]"
+                    x-text="item"
+                  ></p>
+                </div>
+              </label>
+            </template>
           </div>
-          <section class="check-section" aria-label="P8 教師檢核">
-            <div class="check-heading">
-              <div><span class="check-heading-ico">✓</span><strong>教師檢核</strong>
-                <p>實際檢查 Gemini 產出後，再勾選通過項目。</p>
-              </div><span class="check-counter" id="count-8">0 / 10</span>
+
+          <!-- Next Step Promotion Banner (when current step is fully completed) -->
+          <div 
+            x-show="isStepCompleted(currentPrompt.id) && currentStepIndex < prompts.length - 1"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 translate-y-2"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            class="mt-6 p-5 rounded-2xl bg-gradient-to-r from-emerald-100/90 to-cyan-100/90 dark:from-emerald-950/60 dark:to-cyan-950/60 border border-emerald-300 dark:border-emerald-600/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-md dark:shadow-neon-emerald/20"
+          >
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <p class="font-bold text-slate-900 dark:text-white text-base">太棒了！本階段檢核已全數通過</p>
+                <p class="text-xs text-slate-600 dark:text-slate-300">請確認已將產出結果依說明儲存至記事，即可繼續進行下一步。</p>
+              </div>
             </div>
-            <div class="checks-grid"><label class="check-item"><input class="task-checkbox" type="checkbox"
-                  data-stage="8" data-check="0" id="ck-8-0"><span class="check-text">已帶入 B06 單元學習摘要</span></label><label
-                class="check-item"><input class="task-checkbox" type="checkbox" data-stage="8" data-check="1"
-                  id="ck-8-1"><span class="check-text">遊戲與目前單元及 A／B 模式一致</span></label><label class="check-item"><input
-                  class="task-checkbox" type="checkbox" data-stage="8" data-check="2" id="ck-8-2"><span
-                  class="check-text">三關皆有明確學習目標</span></label><label class="check-item"><input class="task-checkbox"
-                  type="checkbox" data-stage="8" data-check="3" id="ck-8-3"><span
-                  class="check-text">每關都有實際可操作的互動任務</span></label><label class="check-item"><input class="task-checkbox"
-                  type="checkbox" data-stage="8" data-check="4" id="ck-8-4"><span
-                  class="check-text">遊戲並非五題測驗換皮</span></label><label class="check-item"><input class="task-checkbox"
-                  type="checkbox" data-stage="8" data-check="5" id="ck-8-5"><span
-                  class="check-text">正確操作、錯誤操作與提示都有效</span></label><label class="check-item"><input
-                  class="task-checkbox" type="checkbox" data-stage="8" data-check="6" id="ck-8-6"><span
-                  class="check-text">可完成三關並重新挑戰</span></label><label class="check-item"><input class="task-checkbox"
-                  type="checkbox" data-stage="8" data-check="7" id="ck-8-7"><span
-                  class="check-text">學科概念與判斷依據已核對</span></label><label class="check-item"><input class="task-checkbox"
-                  type="checkbox" data-stage="8" data-check="8" id="ck-8-8"><span
-                  class="check-text">手機版也能操作</span></label><label class="check-item"><input class="task-checkbox"
-                  type="checkbox" data-stage="8" data-check="9" id="ck-8-9"><span class="check-text">遊戲作品與 P7
-                  測驗分別保存</span></label></div>
-            <div class="deliverable"><span class="deliverable-icon">↗</span><span><strong>本階段成果</strong>Canvas
-                作品二：三關單元互動學習遊戲</span></div>
-          </section>
-        </article>
-        <section class="last-note"><strong>研習核心觀念</strong>
-          <p>AI 協助蒐集、分析、命題與實作；教師負責確認資料、把關評量品質與驗收作品。完成 P7 測驗後，P8 請以相同單元製作另一個有互動任務的遊戲，而不是把五題測驗重新包裝。</p>
-        </section>
-        <footer class="footer"><strong>AI × 國中素養命題與互動教材實戰</strong>
-          <div>免費版 Gemini 教師研習 · 獨立單頁網站 · 不收集使用者資料</div>
-        </footer>
-      </main>
+
+            <button 
+              @click="nextStep()"
+              class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-black text-sm tracking-wide shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 flex-shrink-0"
+            >
+              <span>前往下一個 Prompt</span>
+              <svg class="w-4 h-4 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </button>
+          </div>
+
+        </div>
+
+      </section>
+
     </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-16 border-t border-slate-200 dark:border-slate-900 bg-white/80 dark:bg-slate-950/90 py-8 text-center text-sm text-slate-500 dark:text-slate-400 transition-colors duration-200">
+    <div class="max-w-7xl mx-auto px-4 flex items-center justify-center gap-2">
+      <a href="https://52hal.cc/al" target="_blank" rel="noopener noreferrer" class="font-semibold text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 hover:underline transition-colors">
+        ㄚ亮笑長練功坊
+      </a>
+      <span class="text-slate-400 dark:text-slate-600">|</span>
+      <span class="text-slate-600 dark:text-slate-400 font-medium">丙午．霜降．20261024</span>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Container -->
+  <div 
+    x-show="toast.visible" 
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0 translate-y-3 scale-95"
+    x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+    x-transition:leave-end="opacity-0 translate-y-3 scale-95"
+    class="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-3 rounded-2xl shadow-2xl backdrop-blur-xl border"
+    :class="toast.type === 'success' 
+      ? 'bg-emerald-900/95 dark:bg-emerald-950/95 border-emerald-500 dark:border-emerald-600/80 text-emerald-100 dark:text-emerald-200 shadow-neon-emerald' 
+      : 'bg-slate-800/95 dark:bg-slate-900/95 border-slate-600 dark:border-slate-700 text-white'"
+    x-cloak
+  >
+    <div class="w-6 h-6 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center font-black text-xs flex-shrink-0">
+      ✓
+    </div>
+    <span class="text-sm font-bold tracking-wide" x-text="toast.message"></span>
   </div>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script type="application/json"
-    id="data-stage">[{"id":0,"title":"建立命題任務","mode":"一般對話","duration":"15 分鐘","desc":"先讓 Gemini 讀懂這次教學單元，確立年級及 A／B 命題模式，不急著出題。","attachments":[{"code":"B01","name":"我的教學單元.pdf／課本頁面","status":"必備"},{"code":"B02","name":"學生學習進度.txt","status":"選用"}],"tip":"先上傳課本單元 PDF、圖片或自編講義，再只填四個欄位；其餘讓 Gemini 從教材協助整理。","prompt":"你是我的「國中素養導向評量與會考命題協作助理」。\n\n接下來，我們將在同一個對話中，透過多次提問，逐步完成 5 道原創四選一試題，最後製作成互動測驗網站。\n\n請先閱讀我上傳的課本或單元教材，分析這次的命題任務。\n\n【命題基本設定】\n\n1. 任教科目：【國文／英語／數學／社會／自然】\n2. 任教年級：【七／八／九年級】\n3. 命題單元：【請填寫】\n4. 命題模式：【A／B】\n\n【命題模式說明】\n\nA｜年段適性命題\n- 評量對象是我指定年級的學生。\n- 題目以目前單元及已學知識為限。\n- 不要求學生運用尚未教授的概念。\n- 難度符合本年段實際教學及學生能力。\n- 保留素養導向與會考命題的品質要求。\n\nB｜會考綜合挑戰命題\n- 評量對象設定為接近國中畢業程度的學生。\n- 以指定單元為核心，可整合同一學科第四學習階段的相關知識。\n- 參照歷屆會考的認知需求，著重資料分析、概念整合、多步驟推理及應用。\n- 不必刻意增加文字長度或計算複雜度。\n- 若涉及目前班級尚未學過的內容，必須清楚標示，不得當成該年段日常評量直接使用。\n\n【本階段任務】\n\n請根據我上傳的教材及選擇的命題模式，完成以下工作：\n\n1. 整理命題設定卡\n   包含科目、年級、單元、命題模式及評量範圍。\n\n2. 分析單元學習內容\n   整理本單元的核心概念、重要知識與適合評量的能力。\n\n3. 分析命題範圍\n   根據 A／B 模式，說明適合評量的內容，以及可能超出範圍的知識。\n\n4. 確認後續所需資料\n   簡要列出下一階段需要補充的官方命題規準、素養命題方法或其他必要資料，不必立即搜尋。\n\n【重要原則】\n\n- 以我提供的教材為主要分析依據。\n- 不要自行假設學生已學過所有相關知識。\n- 無法從教材確認的先備知識或教學進度，請標示「待教師確認」。\n- 如果附件缺少重要頁面或內容無法辨識，請明確指出，不要自行補寫。\n- 目前只建立命題任務，不要產生試題。\n- 後續所有命題工作，都必須延續本次確認的設定與 A／B 模式。\n\n請以清楚、精簡的表格呈現分析結果。","checklist":["已上傳正確的課本單元","科目、年級、單元、A／B 模式正確","Gemini 分析的核心概念符合教材","超出教學範圍的內容已標示"],"takeaway":"命題設定卡＋單元學習摘要（保留供 P8 使用）"},{"id":1,"title":"建立會考與素養命題依據","mode":"一般對話","duration":"20 分鐘","desc":"將官方命題規準、素養導向要素與本科課綱交給 Gemini，先建立判斷依據。","attachments":[{"code":"A01","name":"116 年國中教育會考問與答.pdf","status":"必備"},{"code":"A02","name":"素養導向紙筆測驗要素與範例試題.pdf","status":"必備"},{"code":"A05","name":"本科第四學習階段課綱.pdf","status":"必備"}],"tip":"三份官方 PDF 可由講師預先提供必要頁面；上傳後確認 Gemini 確實看得到完整重要內容。","prompt":"【本次附件】\n請先確認我已上傳以下三份官方資料：\nA01：116 年國中教育會考問與答\nA02：素養導向「紙筆測驗」要素與範例試題\nA05：本學科第四學習階段課程綱要\n\n若附件缺漏或無法讀取，請先指出，不要假裝已閱讀。\n\n接下來進行第一階段：建立正式命題依據。\n\n請沿用 Prompt 0 已經確認的科目、年級、單元及 A／B 命題模式。\n\n【三份資料的用途】\n\n1. 會考問與答：\n   確認正式會考的取材、命題原則及評量範圍。\n\n2. 素養導向紙筆測驗要素：\n   確認素養命題的核心原則、情境設計及能力評量方式。\n\n3. 本學科課綱：\n   確認指定單元相關的學習表現及學習內容。\n\n【工作任務】\n\n請完成：\n\n1. 摘要與本次命題相關的會考命題原則。\n2. 整理素養導向紙筆評量的核心要素。\n3. 分析本單元可能對應的課綱學習重點。\n4. 說明本單元適合評量的知識與能力。\n5. 分析 A／B 模式下的評量範圍與限制。\n6. 列出後續命題容易發生的錯誤。\n\n【輸出格式】\n\n表一：官方命題原則與素養命題要素\n表二：本單元的課綱對應與評量目標\n表三：本次命題的限制及注意事項\n\n重要結論請標示文件名稱及頁碼。\n\n不得自行編造課綱代碼、命題規範或未提供的資料。\n\n【本階段檢核】\n\n最後請確認：\n□ 已辨識三份附件\n□ 已維持正確的 A／B 模式\n□ 已找到與單元相關的學習重點\n□ 已區分官方規準與你的推論\n□ 已標示需要教師查證的事項\n\n本階段只建立命題依據，不要出題。","checklist":["已辨識並閱讀三份指定附件","科目、單元及 A／B 模式正確","課綱學習內容與代碼可以核對","分清官方文件內容與 AI 推論","待教師查證的項目已標示"],"takeaway":"會考及素養命題依據表＋課綱對應"},{"id":2,"title":"分析歷屆會考試題","mode":"一般對話","duration":"20 分鐘","desc":"從真實題目拆解評量目標、推理過程與干擾選項，而不是仿寫題目表面形式。","attachments":[{"code":"A06","name":"歷屆會考精選試題.pdf","status":"必備"},{"code":"A07","name":"相對應官方參考答案.pdf","status":"必備"}],"tip":"挑選同科 2～3 題，保留題幹、選項、圖表、年度與題號；答案需與題目一一對應。","prompt":"【本次附件】\nA06：歷屆會考精選試題\nA07：對應的官方參考答案\n\n請先確認附件中能辨識完整題幹、選項、必要圖表及答案。若有內容缺漏，請先指出。\n\n接下來請擔任「國中會考試題分析研究員」。\n\n請根據本次上傳的歷屆試題，結合前面建立的官方命題依據，分析其設計特色。\n\n【逐題分析內容】\n\n1. 這題主要評量什麼能力？\n2. 對應哪些學科知識或學習表現？\n3. 使用什麼情境、資料或文本？\n4. 學生需要經過哪些思考步驟？\n5. 正確答案的判斷依據是什麼？\n6. 錯誤選項可能反映什麼迷思？\n7. 題目有哪些值得參考的素養命題技巧？\n8. 哪些技巧可以應用於我目前的教學單元？\n\n【命題模式調整】\n\n模式 A：\n請指出這些命題技巧如何調整，才能適用於我指定年級的學生。\n\n模式 B：\n請分析其中的綜合應用、概念整合及多步驟推理特徵。\n\n【輸出要求】\n\n1. 以表格逐題分析。\n2. 註明試題年度、題號及科目。\n3. 歸納五項值得借鏡的命題技巧。\n4. 區分官方提供的答案與 AI 推論出的命題意圖。\n5. 不直接仿寫、改寫或複製原題。\n\n【本階段檢核】\n\n請在最後確認：\n□ 分析題目與附件一致\n□ 答案與官方參考答案一致\n□ 能具體說明各題評量的能力\n□ 沒有把「題目很長」視為素養命題標準\n□ 已提出適用於本單元的命題技巧\n\n本階段只分析試題，不要產生新題目。","checklist":["試題、年度、題號與附件一致","正確答案與官方參考答案相符","能清楚說明每題所評量的能力","沒有把題目篇幅當成素養標準","至少找出一項可應用在本單元的技巧"],"takeaway":"歷屆試題命題分析表＋五項可借鏡技巧"},{"id":3,"title":"建立五題素養命題藍圖","mode":"一般對話","duration":"20 分鐘","desc":"參考國教院命題研發方法，先規劃五題的評量目標、題型與難度，再開始找素材。","attachments":[{"code":"A03","name":"四步驟打造素養導向試題.pdf","status":"必備"}],"tip":"這份資料以數學為例介紹四步驟；請提醒學員運用原理，依國文、英語、社會、自然等學科特性調整。","prompt":"【本次附件】\nA03：四步驟打造素養導向試題\n\n請先閱讀本次上傳的命題方法資料。\n\n接下來，請根據我們前面已經建立的：\n\n1. 命題設定卡\n2. 官方會考命題原則\n3. 素養導向紙筆評量要素\n4. 學科課綱及單元內容\n5. 歷屆試題分析結果\n\n規劃五道原創素養選擇題的命題藍圖。\n\n【命題方法】\n\n請參考以下四個步驟：\n\n第一步：蒐集並整理情境相關資訊。\n第二步：找出有需求、有目的或涉及迷思的問題。\n第三步：確認問題背後的學科概念與評量能力。\n第四步：選擇適合評量目標的題型。\n\n請依照我任教學科的特性調整上述方法，不要機械式套用數學範例。\n\n【命題規模】\n\n共 5 題，每題四選一。\n\n可以是獨立單題，也可以組成共用素材的題組。\n\n【難度模式】\n\n如果我選擇模式 A：\n建議規劃：\n- 基本理解 1 題\n- 情境應用 2 題\n- 分析或推理 2 題\n\n所有題目必須符合指定年段及已學內容。\n\n如果我選擇模式 B：\n建議規劃：\n- 知識應用 1 題\n- 分析推理 2 題\n- 多概念或多步驟整合 2 題\n\n以指定單元為核心，可結合國中第四學習階段相關學習內容。\n\n上述比例只是研習建議，不是正式會考固定比例；如學科特性不適合，請說明並合理調整。\n\n【命題藍圖】\n\n請為每題規劃：\n\n1. 題號\n2. 評量目標\n3. 課綱對應\n4. 預定情境或素材\n5. 題型（單題／題組）\n6. 預期解題歷程\n7. 學生常見迷思\n8. 認知需求及預估難度\n9. 是否仍需蒐集資料\n\n請以表格呈現五題藍圖。\n\n【本階段檢核】\n\n最後請檢查：\n□ 五題都有明確的評量目標\n□ 沒有大量重複評量相同概念\n□ 難度符合 A／B 模式\n□ 情境與學科能力有實質關係\n□ 題組之間不會相互洩漏答案\n□ 已列出尚需蒐集的資料\n\n目前只完成命題藍圖，不要產生正式題目。","checklist":["五題都有不同且具體的評量目標","沒有過度集中考相同概念","難度與 A／B 模式一致","情境與學科能力確有實質關係","題目配置沒有互相洩漏答案","已列出尚待蒐集的素材"],"takeaway":"五題命題藍圖"},{"id":4,"title":"蒐集與查證命題素材","mode":"一般對話＋搜尋","duration":"20 分鐘","desc":"先找可靠素材、比較適用性，再由教師查證與確認；不能把 AI 搜尋結果直接當作事實。","attachments":[{"code":"B03","name":"單元命題素材.pdf／圖片／資料表","status":"有素材則上傳"}],"tip":"老師手邊有教材就先附；沒有則先讓 Gemini 搜尋，教師開啟原始來源核對後，再提供選定素材。","prompt":"【本次附件】\nB03：單元命題素材（選用）\n\n如果我已經上傳素材，請優先分析附件。\n如果尚未上傳，請先進行資料搜尋。\n\n現在請根據前面建立的五題命題藍圖，協助我蒐集適合的命題素材。\n\n【素材類型】\n\n可以使用：\n- 真實生活情境\n- 政府公開資料\n- 統計數據與圖表\n- 地圖、圖片與實驗資料\n- 新聞或科普文章\n- 合理的學科探究情境\n\n【素材選擇原則】\n\n1. 素材與教學單元直接相關。\n2. 能支持五題命題藍圖的評量目標。\n3. 情境與需要評量的學科能力有實質關聯。\n4. 資料具有可信來源。\n5. 不得編造真實事件、網址或統計數據。\n6. 必要時可以使用模擬資料，但必須明確標示。\n7. 不得為了增加閱讀量而加入無關資訊。\n8. 素材應符合選定的 A／B 命題模式。\n\n【工作任務】\n\n請提出三種適合本單元的命題素材方向。\n\n逐一說明：\n1. 素材名稱\n2. 內容摘要\n3. 原始來源與網址\n4. 適合評量的能力\n5. 可對應的命題藍圖題號\n6. 使用素材時的限制\n7. 尚需人工確認的資料\n\n請以表格比較，並推薦最適合的素材。\n\n【重要限制】\n\n如果無法確認資料來源，請標示待查證。\n\n如果原始素材涉及著作權，請提醒我，不要直接大量複製到後續公開網站。\n\n【本階段檢核】\n\n請確認：\n□ 素材符合教學單元\n□ 資料來源可以查證\n□ 素材能支持命題目標\n□ 符合 A／B 模式\n□ 沒有明顯的事實錯誤\n□ 已區分真實資料與模擬資料\n\n請等待我確認素材後，再進入正式命題。","checklist":["素材與指定單元直接相關","原始來源已由教師查證","可支援五題的評量目標","符合選定的 A／B 模式","數據、圖表與單位無明顯錯誤","已區分真實與模擬資料並確認引用限制"],"takeaway":"教師已確認的命題素材"},{"id":5,"title":"正式產生五題原創試題","mode":"一般對話","duration":"30 分鐘","desc":"按照前面確認的藍圖與素材出題，完整產生學生版、教師版及自我檢查表。","attachments":[{"code":"—","name":"沿用 P4 已確認素材","status":"不需新增"},{"code":"B03","name":"若前階段尚未成功上傳，於此補上","status":"視情況"}],"tip":"本階段原則上不新增附件；若 P4 選定素材未在對話中提供完整，再補上 B03。","prompt":"【附件確認】\n本階段原則上不需新增檔案。\n\n請使用前面已確認的命題素材及五題命題藍圖。\n\n如果缺少教師確認的必要資料，請先指出，不要自行編造。\n\n現在請正式設計五道原創素養試題。\n\n【命題依據】\n\n必須沿用：\n1. Prompt 0 的命題設定卡及 A／B 模式。\n2. 官方會考命題原則。\n3. 素養導向紙筆評量要素。\n4. 本單元課綱及教學內容。\n5. 歷屆試題分析結果。\n6. 五題命題藍圖。\n7. 已確認的命題素材。\n\n【命題要求】\n\n1. 共 5 題，每題四選一。\n2. 每題只有一個正確答案。\n3. 每題都要有明確的評量目標。\n4. 符合選定的 A／B 難度模式。\n5. 以學科知識的理解、應用、分析及推理為核心。\n6. 可使用獨立單題或共用素材的題組。\n7. 題幹清楚，條件充分。\n8. 錯誤選項合理，能反映學生可能的迷思。\n9. 避免陷阱題、歧義題及無關的冗長情境。\n10. 不直接抄寫或只修改歷屆試題的數字。\n11. 不得擅自改動已查證的資料。\n12. 不得讓某題的答案直接洩漏其他題答案。\n\n【模式限制】\n\n模式 A：\n五題必須符合指定年級及已學習的知識範圍。\n\n模式 B：\n五題可以整合國中第四學習階段的相關概念，但要以指定單元為核心，並註明可能涉及的跨單元知識。\n\n【輸出格式】\n\n第一部分：學生版\n- 評量標題\n- 必要的共用素材\n- 五道完整題目\n- 每題 A、B、C、D 四個選項\n- 不顯示正確答案\n\n第二部分：教師版\n每題提供：\n- 正確答案\n- 詳細解析\n- 四個選項的正誤分析\n- 評量目標\n- 課綱對應\n- 認知需求及預估難度\n- 學生可能的迷思\n- 素材來源\n\n第三部分：命題自我檢查\n請以表格逐題確認：\n\n□ 題目符合指定單元\n□ 符合 A／B 模式\n□ 答案唯一且推理正確\n□ 題幹及選項沒有歧義\n□ 評量目標明確\n□ 題目間沒有重複或互相提示\n\n請輸出完整的五題初稿，不要只提供構想。\n\n這些試題目前屬於 AI 初稿，尚未經教師審題，不得宣稱符合正式會考命題審查標準。","checklist":["完整產生五題，每題四選一","學生版未洩漏答案","教師版五題皆附詳細解析","教師已獨立作答並確認正解唯一","題目符合命題藍圖且無明顯互相提示"],"takeaway":"五題初稿：學生版＋教師版＋自我檢核"},{"id":6,"title":"命題審查、修正與定稿","mode":"一般對話＋人工審題","duration":"30 分鐘","desc":"內建完整 B04 十項審查規準，Gemini 先審查，教師再做專業確認，產生兩份 Canvas 交接資料。","attachments":[{"code":"A04","name":"選擇題命題原則與不良題範例.pdf","status":"必備"},{"code":"B04","name":"命題審查表已內建提示詞","status":"免上傳"}],"tip":"只需上傳官方 A04；自編 B04 全文已放入下方提示詞，不需要另外找檔案。","prompt":"【本次附件】\nA04：選擇題命題原則與不良題範例\n\n請先閱讀本次上傳的官方資料。\n\n本階段不需要另外上傳 B04 命題審查表，因為完整的研習用審查表已經附在以下提示詞中。\n\n現在請擔任「國中素養導向評量命題審查助理」，嚴格審查前面完成的五道原創試題。\n\n請使用官方資料、先前已確認的課綱與命題設定，以及以下 B04 審查表進行評估。\n\n================================\n【B04｜命題品質審查表】\n================================\n\n本表為教師研習使用的自編審查工具，並非官方會考認證標準。\n\n每項指標採三級評分：\n\n2 分：符合要求，有明確證據支持。\n1 分：部分符合，需要修正或補充確認。\n0 分：不符合、存在重大問題，或欠缺足夠證據。\n\n每題最高 20 分。\n\n【審查指標】\n\n01｜課綱適切性\n試題內容與學習表現、學習內容及評量目標是否一致？\n是否存在無法查證的課綱代碼？\n\n02｜命題模式適切性\n是否符合已選定的 A／B 模式？\n模式 A 是否涉及尚未學過的知識？\n模式 B 是否仍在國中第四學習階段範圍內？\n\n03｜素養導向與評量效度\n題目是否真正評量預定的學科能力？\n情境、資料或問題是否具有實質意義？\n是否只是在傳統題目前加上故事？\n\n04｜學科知識與素材正確性\n概念、事實、數據、圖表、單位及引用是否正確？\n解題歷程是否符合學科原理？\n是否有未查證的內容？\n\n05｜答案唯一性\n是否只有一個正確答案？\n正解是否有充分理由？\n是否存在其他合理答案？\n\n06｜干擾選項品質\n三個錯誤選項是否合理？\n是否能反映學生常見迷思或推理錯誤？\n是否有明顯荒謬、過度提示或形式不一致的選項？\n\n07｜題幹與文字品質\n題意是否清楚？\n條件是否完整？\n是否存在歧義、模糊敘述、冗長文字或不必要的否定問法？\n\n08｜公平性與適切性\n是否符合評量對象的閱讀與認知程度？\n是否存在文化、性別、社經背景或其他不必要的偏誤？\n是否需要無關的生活經驗才能作答？\n\n09｜題目獨立性與整體配置\n不同題目是否重複評量相同內容？\n某一題是否透露另一題的答案？\n五題是否涵蓋預定的不同評量目標？\n\n10｜原創性與使用合規\n是否直接抄襲或僅表面改寫歷屆試題？\n素材是否具有必要的來源說明？\n後續公開使用是否有著作權疑慮？\n\n================================\n【第一階段：逐題審查】\n================================\n\n請針對五道題目，依照上述 10 項指標逐項評估。\n\n請以表格呈現：\n\n- 題號\n- 各項審查分數\n- 總分（20 分）\n- 發現的主要問題\n- 必須修正的內容\n- 是否仍需教師確認\n\n所有分數都必須附有判斷依據。\n\n不能只給分數而不說明原因。\n\n如果資料不足，請標示「待查證」，不要假裝已確認正確。\n\n================================\n【第二階段：重大問題檢查】\n================================\n\n以下四項列為優先修正項目：\n\n1. 課綱適切性\n2. 命題模式適切性\n3. 學科知識與素材正確性\n4. 答案唯一性\n\n只要其中任何一項未獲得 2 分，就不得建議直接定稿。\n\n其他指標如有 0 分，也必須修正。\n\n請區分：\n- 重大問題\n- 一般修正\n- 文字或格式優化\n\n================================\n【第三階段：修正試題】\n================================\n\n請先列出每題的修正建議，再產生完整修正版。\n\n修正時必須：\n1. 保留原本的評量目標。\n2. 改善題幹及干擾選項。\n3. 修正事實、概念或答案問題。\n4. 避免產生新的歧義。\n5. 確保修改後的答案與解析同步更新。\n6. 仍然符合 A／B 命題模式。\n\n請重新輸出：\nA. 學生版五題\nB. 教師版五題答案與完整解析\n\n================================\n【第四階段：定稿交接資料】\n================================\n\n請整理一份「B05 五題定稿與答案」。\n\n內容必須包括：\n1. 學科、年級、單元、A／B 模式。\n2. 完整的共用素材。\n3. 五題題幹。\n4. 每題四個選項。\n5. 五題正確答案。\n6. 逐題完整解析。\n7. 素材來源及必要備註。\n\n請以容易複製的純文字格式提供，不得省略題目內容。\n\n這份交接資料將用於下一階段的 Gemini Canvas 網站製作。\n\n另外，請從 Prompt 0 的單元分析中，整理一份簡短的「B06 單元學習摘要」，包含：\n\n- 單元核心概念\n- 三至五個重要學習重點\n- 適合練習的知識或技能\n- 學生常見迷思\n- 年級與 A／B 模式限制\n\n這份資料將作為後續遊戲網站的內容依據。\n\n================================\n【第五階段：審查結果與檢核】\n================================\n\n最後請確認：\n\n□ 已審查完整五題\n□ 十項指標均有評估\n□ 已指出重大問題\n□ 已同步更新修正版答案與解析\n□ 已產生完整 B05 定稿交接資料\n□ 已整理 B06 單元學習摘要\n□ 已列出仍需教師人工確認的問題\n\n請提醒我：\n本次 AI 審查只是輔助，正式定稿仍須由學科教師確認。\n\n不要把 AI 自我評分視為正式會考的命題品質認證。","checklist":["已上傳並確認 A04 官方資料","五題都按 B04 十項指標審查","重大問題已修正，正解都可確認","已由教師或同科同儕實際試答","B05 五題定稿含完整答案與解析","B06 單元摘要已整理並可用於遊戲"],"takeaway":"逐題審查報告＋B05 定稿題庫＋B06 單元學習摘要"},{"id":7,"title":"Canvas 製作五題互動測驗","mode":"Gemini Canvas","duration":"35 分鐘","desc":"將已經定稿的五題轉成線上可作答、能計分與顯示解析的互動網站。","attachments":[{"code":"B05","name":"五題定稿與答案.txt","status":"新對話必備"}],"tip":"若原對話可正確引用完整 B05 就不用重傳；新開 Canvas 對話則必須貼上或上傳 B05。","prompt":"【本階段附件】\n\nB05：五題定稿與答案\n\n請確認可以完整取得 B05 的內容。\n\n若目前對話中沒有完整資料，請先要求我提供，不得自行補題或重新命題。\n\n現在請使用 Gemini Canvas，把已經由教師確認的五道原創素養試題，製作成可以實際操作的互動測驗網站。\n\n【網站內容】\n\n請沿用已定稿的：\n1. 任教科目及單元。\n2. 適用年級。\n3. A／B 命題模式。\n4. 完整共用素材。\n5. 五題題幹與四個選項。\n6. 五題正確答案。\n7. 五題詳細解析。\n\n不得自行修改題幹、選項、答案、解析或重要數據。\n\n【網站設計】\n\n網站標題：\n請依據學科與單元，自動產生一個清楚、適合國中學生的名稱。\n\n使用繁體中文。\n\n整體風格簡潔、現代、容易閱讀，適合國中學生。\n\n手機、平板及電腦均可正常操作。\n\n【基本功能】\n\n1. 首頁顯示測驗名稱、單元及適用對象。\n2. 顯示完整的必要共用素材。\n3. 完整呈現五道選擇題。\n4. 每題提供 A、B、C、D 四個選項。\n5. 每題只能選擇一個答案。\n6. 未完成五題不得送出，並提示尚未作答的題號。\n7. 學生按下「送出答案」後才顯示結果。\n8. 每題 20 分，總分 100 分。\n9. 自動計算正確題數及得分。\n10. 逐題顯示答對或答錯。\n11. 顯示正確答案與完整解析。\n12. 提供「重新作答」功能。\n13. 重新作答後必須清除前次選項、得分與解析。\n\n【技術要求】\n\n1. 建立單頁互動網站。\n2. 優先使用前端程式完成。\n3. 不需要登入、資料庫或外部 API。\n4. 不使用付費 AI 功能。\n5. 不收集或儲存學生個人資料。\n6. 不依賴外部網站才能完成答題。\n7. 圖表、公式與文字必須清晰可讀。\n8. 保持手機版的良好操作體驗。\n\n【品質檢查】\n\n完成網站後，請檢查：\n□ 是否完整顯示五題？\n□ 題目內容是否與 B05 一致？\n□ 是否正確判斷每題答案？\n□ 計分是否正確？\n□ 未完成所有題目時是否能阻止送出？\n□ 答案與解析是否只在送出後出現？\n□ 重新作答能否正常運作？\n□ 手機版是否有排版問題？\n□ 是否有程式錯誤或無法操作的按鈕？\n\n可以從程式碼確認的項目，請先進行檢查。\n\n無法實際驗證的項目，請標示「待教師測試」，不得宣稱已通過。\n\n請建立完整、可預覽的互動測驗網站。\n\n如需修正程式，請直接修改，但不可擅自改變已定稿的試題。","checklist":["五題內容與 B05 定稿完全一致","全對時正確顯示 100 分","部分答對時分數正確","未答完五題時無法送出","送出後才出現答案與解析","重新作答會清除狀態","手機版文字與選項正常","第一個測驗網站已獨立保存"],"takeaway":"Canvas 作品一：五題互動測驗網站"},{"id":8,"title":"Canvas 製作單元學習遊戲","mode":"Gemini Canvas","duration":"30 分鐘","desc":"再以同一教學單元打造三關互動學習遊戲，強調學習任務、操作回饋與概念理解，不只是測驗換皮。","attachments":[{"code":"B06","name":"單元學習摘要.txt","status":"新對話必備"},{"code":"B01","name":"原始單元教材.pdf／圖片","status":"需要時補充"}],"tip":"請另建 Canvas 作品，避免覆蓋 P7 測驗網站；新對話至少要帶入 B06，必要時再補 B01。","prompt":"【本階段附件】\n\nB06：單元學習摘要\nB01：原始教學單元教材（必要時提供）\n\n請先確認你已取得：\n\n1. 任教科目\n2. 任教年級\n3. 目前教學單元\n4. 單元核心概念\n5. 重要學習內容\n6. A／B 命題模式\n7. 學生常見迷思或學習困難\n\n如果目前對話已有這些資訊，請直接沿用。\n若缺少重要內容，請要求我補充，不要自行編造教材內容。\n\n================================\n【你的角色】\n================================\n\n你是一位熟悉國中課程、遊戲化學習、教學設計及網頁互動程式開發的專家。\n\n現在請使用 Gemini Canvas，以我目前的教學單元為核心，製作一個能讓國中學生實際操作的「互動學習遊戲網站」。\n\n這是新的遊戲作品，不是前一個五題測驗網站的修改版。\n\n請保留原本的測驗網站，不要覆蓋或破壞它。\n\n================================\n【第一部分：分析遊戲的學習目標】\n================================\n\n請先根據教學單元內容，確認：\n\n1. 這個單元最重要的核心概念。\n2. 學生需要練習的知識或技能。\n3. 學生可能出現的迷思或錯誤。\n4. 最適合透過遊戲練習的學習內容。\n5. 適合本年級學生的認知需求。\n\n如果選擇模式 A：\n遊戲內容應符合指定年級與目前單元的學習程度，不得要求學生運用尚未教授的概念。\n\n如果選擇模式 B：\n遊戲可以加入跨單元整合與進階推理挑戰，但必須保持在國中第四學習階段的學習範圍內。\n\n================================\n【第二部分：決定最適合的遊戲機制】\n================================\n\n請根據單元性質，自行選擇最適合的一種主要遊戲玩法。\n\n可以參考：\n- 闖關解謎\n- 知識分類挑戰\n- 配對與排序\n- 情境決策\n- 虛擬實驗\n- 任務冒險\n- 資料分析與推理遊戲\n\n請不要要求我在多種玩法中選擇。\n\n請運用你的教學設計專業，選擇最能幫助學生理解本單元的一種玩法，並簡短說明：\n\n1. 遊戲名稱\n2. 學習目標\n3. 遊戲故事或任務情境\n4. 核心互動方式\n5. 預期學習效果\n\n不要只是將前面的五道選擇題，加上分數、角色或動畫後稱為遊戲。\n\n================================\n【第三部分：遊戲內容設計】\n================================\n\n請規劃三個逐步進階的學習關卡。\n\n第一關：核心概念\n讓學生認識、辨識或操作本單元的重要知識。\n\n第二關：知識應用\n讓學生在具體情境中，運用相關概念完成任務。\n\n第三關：分析與挑戰\n讓學生透過判斷、推理、整合資訊或解決問題完成挑戰。\n\n每關至少包含一項學生必須主動操作的任務。\n\n互動形式應符合學科特性，可以結合點選、配對、分類、排序、參數操作或情境選擇等方式。\n\n同一款遊戲盡量包含兩種有學習意義的互動形式，但不可為了增加形式而造成操作困難。\n\n【關卡設計原則】\n\n1. 內容必須與單元學習目標直接相關。\n2. 任務規則清楚。\n3. 學生可以自行操作。\n4. 作答或操作結果能得到適當回饋。\n5. 答錯後能獲得提示並重新嘗試。\n6. 避免只是測試記憶力或反應速度。\n7. 不使用未查證的學科資訊。\n8. 遊戲任務、正解及提示必須具備合理的學科依據。\n\n================================\n【第四部分：網站功能】\n================================\n\n請製作完整的互動遊戲網站，包含：\n\n一、遊戲首頁\n- 遊戲名稱\n- 單元名稱\n- 適用年級\n- 簡短遊戲介紹\n- 開始遊戲按鈕\n\n二、關卡系統\n- 共三個學習關卡\n- 顯示目前關卡\n- 顯示學習任務\n- 清楚的操作說明\n- 完成當前關卡才能進入下一關\n\n三、互動操作\n- 使用學生容易理解的操作方式\n- 手機和電腦都可以玩\n- 所有按鈕都必須有實際功能\n- 若使用拖曳操作，須提供手機可用的替代方式\n- 不依賴複雜設備或特殊權限\n\n四、學習回饋\n- 回答或操作正確時，提供正向回饋\n- 發生錯誤時，提供具體提示\n- 不只顯示「答錯了」\n- 必要時說明相關概念\n- 讓學生可以再次嘗試\n\n五、遊戲成果\n- 顯示完成的關卡\n- 顯示合理的得分或成就\n- 完成三關後顯示過關畫面\n- 提供重新挑戰功能\n- 顯示本次練習的重要學習重點\n\n================================\n【第五部分：網站視覺】\n================================\n\n請使用：\n\n1. 繁體中文介面。\n2. 適合國中學生的視覺設計。\n3. 活潑但不幼稚的風格。\n4. 清楚的文字、按鈕與操作提示。\n5. 適當的遊戲感與成就感。\n6. 簡潔的畫面與明確的任務引導。\n7. 支援手機、平板及電腦。\n8. 不使用容易造成注意力干擾的過度動畫。\n\n可以使用簡單的圖形、圖示、CSS 或 SVG 建立遊戲視覺。\n\n不需要製作大型 3D 遊戲。\n\n================================\n【第六部分：技術限制】\n================================\n\n1. 使用 Gemini Canvas 製作可預覽的互動網站。\n2. 優先使用單頁前端程式。\n3. 不需要額外資料庫。\n4. 不需要外部 API。\n5. 不需要付費 AI 功能。\n6. 不需要學生登入。\n7. 不收集學生姓名或其他個人資料。\n8. 不依賴外部服務才能完成主要遊戲流程。\n9. 避免使用有授權疑慮的角色、圖片或音樂。\n10. 保持程式簡潔，方便後續修改。\n\n================================\n【第七部分：完成後的品質檢查】\n================================\n\n請檢查：\n\n□ 遊戲內容符合指定教學單元。\n□ 遊戲難度符合 A／B 模式。\n□ 三個關卡都有明確學習目標。\n□ 每關都有可以實際操作的任務。\n□ 遊戲不是單純的五題測驗換皮。\n□ 遊戲中的學科答案或判斷依據正確。\n□ 學生可以正常進入下一關。\n□ 正確與錯誤操作都有適當回饋。\n□ 可以完成整個遊戲。\n□ 可以重新開始遊戲。\n□ 手機版可以正常操作。\n□ 沒有無作用的按鈕或明顯程式錯誤。\n\n請先檢查程式邏輯及可驗證的功能。\n\n無法實際測試的項目，請列為「待教師操作確認」。\n\n================================\n【最終輸出】\n================================\n\n請先簡短說明你選定的遊戲玩法及理由，接著直接在 Canvas 中製作完整遊戲。\n\n完成後請提供：\n\n1. 可操作的遊戲預覽。\n2. 三關學習目標與玩法說明。\n3. 各關正確判斷依據及回饋設計。\n4. 程式功能自我檢查結果。\n5. 教師還需要親自測試的項目。\n\n請以能在免費版 Gemini Canvas 中實際運作為優先，不要為了增加功能而讓遊戲過度複雜。","checklist":["已帶入 B06 單元學習摘要","遊戲與目前單元及 A／B 模式一致","三關皆有明確學習目標","每關都有實際可操作的互動任務","遊戲並非五題測驗換皮","正確操作、錯誤操作與提示都有效","可完成三關並重新挑戰","學科概念與判斷依據已核對","手機版也能操作","遊戲作品與 P7 測驗分別保存"],"takeaway":"Canvas 作品二：三關單元互動學習遊戲"}]</script>
+
+  <!-- Audio Controller & Application Logic -->
   <script>
-    (() => {
-      'use strict';
-      const stages = JSON.parse(document.getElementById('data-stage').textContent);
-      const STORAGE_KEY = 'aliang-gemini-workshop-v1';
-      let saved = {};
-      try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') || {} } catch (_) { saved = {} }
-      let toastTimer = null;
-      function toast(message) { const el = document.getElementById('toast'); el.textContent = message; el.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), 2350) }
-      function persist() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(saved)) } catch (_) { } }
-      function update() { let done = 0, total = 0; for (const s of stages) { const boxes = [...document.querySelectorAll(`input[data-stage="${s.id}"]`)]; const yes = boxes.filter(x => x.checked).length; done += yes; total += boxes.length; const counter = document.getElementById('count-' + s.id); if (counter) counter.textContent = `${yes} / ${boxes.length}`; const complete = yes === boxes.length; const badge = document.getElementById('badge-' + s.id); badge.textContent = complete ? '✓ 本階段完成' : '尚未檢核'; badge.classList.toggle('done', complete); const nav = document.querySelector(`[data-nav="${s.id}"]`); nav?.classList.toggle('done', complete); const sym = document.getElementById('nav-state-' + s.id); if (sym) sym.textContent = complete ? '✓' : '○' } const pct = total ? done / total * 100 : 0; document.getElementById('progress-fill').style.width = pct + '%'; document.getElementById('progress-label').textContent = `已完成 ${done} / ${total} 項（${Math.round(pct)}%）` }
-      for (const cb of document.querySelectorAll('.task-checkbox')) { const key = cb.dataset.stage + '-' + cb.dataset.check; cb.checked = !!saved[key]; cb.addEventListener('change', () => { saved[key] = cb.checked; persist(); update() }) } update();
-      async function copy(text) { if (navigator.clipboard && window.isSecureContext) { try { await navigator.clipboard.writeText(text); return true } catch (_) { } } const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0'; document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy') } catch (_) { ok = false } ta.remove(); return ok }
-      for (const btn of document.querySelectorAll('[data-copy]')) { btn.addEventListener('click', async () => { const s = stages[Number(btn.dataset.copy)]; const ok = await copy(s.prompt); if (ok) { btn.classList.add('copied'); btn.querySelector('.copy-btn-text').textContent = '已複製'; toast(`Prompt ${s.id} 已複製，可貼入 Gemini`); setTimeout(() => { btn.classList.remove('copied'); btn.querySelector('.copy-btn-text').textContent = '複製提示詞' }, 1650) } else { toast('無法自動複製，請選取提示詞文字手動複製') } }) }
-      const folds = [...document.querySelectorAll('[data-fold]')]; function setFold(btn, hide) { const id = btn.dataset.fold; const pre = document.getElementById('prompt-text-' + id); pre.classList.toggle('folded', hide); btn.textContent = hide ? '展開' : '收合'; btn.setAttribute('aria-expanded', String(!hide)) } for (const btn of folds) btn.addEventListener('click', () => setFold(btn, !document.getElementById('prompt-text-' + btn.dataset.fold).classList.contains('folded')));
-      let allFolded = false; document.getElementById('toggle-all').addEventListener('click', () => { allFolded = !allFolded; for (const b of folds) setFold(b, allFolded); document.getElementById('toggle-all').textContent = allFolded ? '＋ 展開所有提示詞' : '− 收合所有提示詞'; toast(allFolded ? '已收合九組提示詞' : '已展開九組提示詞') });
-      function download(name, text) { const blob = new Blob(['\ufeff', text], { type: 'text/plain;charset=utf-8' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000) }
-      document.getElementById('download-all').addEventListener('click', () => { let content = 'AI × 國中素養命題與互動教材實戰\n完整教師操作提示詞 · Prompt 0–8\n\n請依階段先上傳指定附件，再將提示詞貼入 Gemini。\n\n'; for (const s of stages) { content += '='.repeat(48) + `\nPrompt ${s.id}｜${s.title}（${s.mode}）\n` + '='.repeat(48) + '\n'; content += '本次附件：' + s.attachments.map(a => `${a.code} ${a.name}［${a.status}］`).join('；') + '\n'; content += '上傳提醒：' + s.tip + '\n\n' + s.prompt + '\n\n'; content += '教師檢核：\n' + s.checklist.map(t => '□ ' + t).join('\n') + '\n\n' } download('AI_國中素養命題_九階段完整提示詞.txt', content); toast('已下載九階段完整提示詞 TXT') });
-      document.getElementById('copy-status').addEventListener('click', async () => { let txt = 'AI × 國中素養命題與互動教材實戰｜教師檢核紀錄\n\n'; for (const s of stages) { txt += `P${s.id} ${s.title}\n`; for (let i = 0; i < s.checklist.length; i++) { const cb = document.getElementById(`ck-${s.id}-${i}`); txt += `${cb?.checked ? '☑' : '□'} ${s.checklist[i]}\n` } txt += '\n' } toast((await copy(txt)) ? '教師檢核紀錄已複製' : '無法自動複製，請稍後再試') });
-      document.getElementById('clear-status').addEventListener('click', () => { if (!confirm('確定要清除全部教師檢核勾選紀錄？此操作無法復原。')) return; saved = {}; document.querySelectorAll('.task-checkbox').forEach(x => x.checked = false); persist(); update(); toast('已清除全部檢核紀錄') });
-      const links = [...document.querySelectorAll('[data-nav],[data-mob-nav]')]; function setActive(id) { for (const l of links) l.classList.toggle('active', Number(l.dataset.nav ?? l.dataset.mobNav) === id) }
-      if ('IntersectionObserver' in window) { let current = 0; const observer = new IntersectionObserver(entries => { const visible = entries.filter(e => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top); if (visible.length) { current = Number(visible[0].target.id.split('-')[1]); setActive(current) } }, { rootMargin: '-65px 0px -65% 0px', threshold: 0 }); document.querySelectorAll('.step-card').forEach(e => observer.observe(e)); } else { setActive(0) }
-      for (const l of links) l.addEventListener('click', () => setActive(Number(l.dataset.nav ?? l.dataset.mobNav)));
-    })();
+    // Audio Synthesis Controller using Native Web Audio API
+    const AudioController = {
+      ctx: null,
+      init() {
+        if (!this.ctx) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          if (AudioContextClass) {
+            this.ctx = new AudioContextClass();
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      },
+      play(type, isMuted = false) {
+        if (isMuted) return;
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          switch (type) {
+            case 'click':
+              osc.type = 'sine';
+              osc.frequency.setValueAtTime(500, now);
+              osc.frequency.exponentialRampToValueAtTime(750, now + 0.04);
+              gain.gain.setValueAtTime(0.12, now);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+              osc.start(now);
+              osc.stop(now + 0.04);
+              break;
+
+            case 'copy':
+              // Bright pleasant double chime
+              osc.type = 'triangle';
+              osc.frequency.setValueAtTime(880, now); // A5
+              osc.frequency.setValueAtTime(1320, now + 0.08); // E6
+              gain.gain.setValueAtTime(0.15, now);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+              osc.start(now);
+              osc.stop(now + 0.22);
+              break;
+
+            case 'check':
+              // Crisp rising tone
+              osc.type = 'sine';
+              osc.frequency.setValueAtTime(523.25, now); // C5
+              osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.08); // G5
+              gain.gain.setValueAtTime(0.15, now);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+              osc.start(now);
+              osc.stop(now + 0.12);
+              break;
+
+            case 'uncheck':
+              // Subtle falling tone
+              osc.type = 'sine';
+              osc.frequency.setValueAtTime(450, now);
+              osc.frequency.exponentialRampToValueAtTime(300, now + 0.06);
+              gain.gain.setValueAtTime(0.08, now);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+              osc.start(now);
+              osc.stop(now + 0.06);
+              break;
+
+            case 'step':
+              // Smooth transition chirp
+              osc.type = 'triangle';
+              osc.frequency.setValueAtTime(440, now);
+              osc.frequency.exponentialRampToValueAtTime(660, now + 0.07);
+              gain.gain.setValueAtTime(0.1, now);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+              osc.start(now);
+              osc.stop(now + 0.1);
+              break;
+
+            case 'levelUp':
+              // Triumphant four-chord arpeggio
+              [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
+                const o = this.ctx.createOscillator();
+                const g = this.ctx.createGain();
+                o.type = 'triangle';
+                o.frequency.value = freq;
+                o.connect(g);
+                g.connect(this.ctx.destination);
+                g.gain.setValueAtTime(0.13, now + idx * 0.07);
+                g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.07 + 0.25);
+                o.start(now + idx * 0.07);
+                o.stop(now + idx * 0.07 + 0.25);
+              });
+              break;
+          }
+        } catch (err) {
+          console.warn('音效合成錯誤：', err);
+        }
+      }
+    };
+
+    function workflowApp() {
+      return {
+        prompts: [{"id": "prompt_0", "num": 0, "title": "Prompt 0｜建立命題任務", "shortTitle": "建立命題任務", "source": "課本、A01、A02、A05", "content": "你是我的「國中素養導向評量與會考命題協作助理」。\n\n請先閱讀我上傳的課本或單元教材，分析這次的命題任務。\n\n【命題基本設定】\n\n1. 任教科目：【國文／英語／數學／社會／自然】\n2. 任教年級：【七／八／九年級】\n3. 命題單元：【請填寫】\n4. 命題模式：【A／B】\n\n【命題模式說明】\n\nA｜年段適性命題\n- 評量對象是我指定年級的學生。\n- 題目以目前單元及已學知識為限。\n- 不要求學生運用尚未教授的概念。\n- 難度符合本年段實際教學及學生能力。\n- 保留素養導向與會考命題的品質要求。\n\nB｜會考綜合挑戰命題\n- 評量對象設定為接近國中畢業程度的學生。\n- 以指定單元為核心，可整合同一學科第四學習階段的相關知識。\n- 參照歷屆會考的認知需求，著重資料分析、概念整合、多步驟推理及應用。\n- 不必刻意增加文字長度或計算複雜度。\n- 若涉及目前班級尚未學過的內容，必須清楚標示，不得當成該年段日常評量直接使用。\n\n【本階段任務】\n\n請根據我上傳的教材及選擇的命題模式，完成以下工作：\n\n1. 整理命題設定卡\n   包含科目、年級、單元、命題模式及評量範圍。\n\n2. 分析單元學習內容\n   整理本單元的核心概念、重要知識與適合評量的能力。\n\n3. 分析命題範圍\n   根據 A／B 模式，說明適合評量的內容，以及可能超出範圍的知識。\n\n4. 確認後續所需資料\n   簡要列出下一階段需要補充的官方命題規準、素養命題方法或其他必要資料，不必立即搜尋。\n\n【重要原則】\n\n- 以我提供的教材為主要分析依據。\n- 不要自行假設學生已學過所有相關知識。\n- 無法從教材確認的先備知識或教學進度，請標示「待教師確認」。\n- 如果附件缺少重要頁面或內容無法辨識，請明確指出，不要自行補寫。\n- 目前只建立命題任務，不要產生試題。\n- 後續所有命題工作，都必須延續本次確認的設定與 A／B 模式。\n\n請以清楚、精簡的表格呈現分析結果。", "checklist": ["將結果儲存至記事並轉換為來源「命題任務分析與設定規劃」", "已上傳正確的課本單元", "科目、年級、單元、A／B 模式正確", "Gemini 分析的核心概念符合教材", "超出教學範圍的內容已標示"]}, {"id": "prompt_1", "num": 1, "title": "Prompt 1｜建立會考與素養命題依據", "shortTitle": "建立會考與素養命題依據", "source": "A01、A02、A05、命題任務分析與設定規劃", "content": "本階段任務為建立正式命題依據。\n\n請沿用上一階段已經確認的「命題任務分析與設定規劃」。\n\n依據勾選來源，個資料的用途如下：\n\n1. 會考問與答：\n   確認正式會考的取材、命題原則及評量範圍。\n\n2. 素養導向紙筆測驗要素：\n   確認素養命題的核心原則、情境設計及能力評量方式。\n\n3. 總綱與本學科課綱：\n   確認指定單元相關的學習表現及學習內容。\n\n【工作任務】\n\n請完成：\n\n1. 摘要與本次命題相關的會考命題原則。\n2. 整理素養導向紙筆評量的核心要素。\n3. 分析本單元可能對應的課綱學習重點。\n4. 說明本單元適合評量的知識與能力。\n5. 分析 A／B 模式下的評量範圍與限制。\n6. 列出後續命題容易發生的錯誤。\n\n【輸出格式】\n\n表一：官方命題原則與素養命題要素\n表二：本單元的課綱對應與評量目標\n表三：本次命題的限制及注意事項\n\n重要結論請標示文件名稱及頁碼。\n\n不得自行編造課綱代碼、命題規範或未提供的資料。\n\n【本階段檢核】\n\n最後請確認：\n□ 已辨識四份附件\n□ 已維持正確的 A／B 模式\n□ 已找到與單元相關的學習重點\n□ 已區分官方規準與你的推論\n□ 已標示需要教師查證的事項\n\n本階段只建立命題依據，不要出題。", "checklist": ["已辨識並閱讀四份指定附件", "科目、單元及 A／B 模式正確", "課綱學習內容與代碼可以核對", "分清官方文件內容與 AI 推論", "待教師查證的項目已標示"]}, {"id": "prompt_2", "num": 2, "title": "Prompt 2｜分析歷屆會考試題", "shortTitle": "分析歷屆會考試題", "source": "A06、A07", "content": "請先確認來源中能辨識完整題幹、選項、必要圖表及答案。若有內容缺漏，請先指出。\n\n接下來請擔任「國中會考試題分析研究員」。\n\n請根據本次上傳的歷屆試題，結合前面建立的官方命題依據，分析其設計特色。\n\n【逐題分析內容】\n\n1. 這題主要評量什麼能力？\n2. 對應哪些學科知識或學習表現？\n3. 使用什麼情境、資料或文本？\n4. 學生需要經過哪些思考步驟？\n5. 正確答案的判斷依據是什麼？\n6. 錯誤選項可能反映什麼迷思？\n7. 題目有哪些值得參考的素養命題技巧？\n8. 哪些技巧可以應用於我目前的教學單元？\n\n【命題模式調整】\n\n模式 A：\n請指出這些命題技巧如何調整，才能適用於我指定年級的學生。\n\n模式 B：\n請分析其中的綜合應用、概念整合及多步驟推理特徵。\n\n【輸出要求】\n\n1. 以表格逐題分析。\n2. 註明試題年度、題號及科目。\n3. 歸納五項值得借鏡的命題技巧。\n4. 區分官方提供的答案與 AI 推論出的命題意圖。\n5. 不直接仿寫、改寫或複製原題。\n\n【本階段檢核】\n\n請在最後確認：\n□ 分析題目與附件一致\n□ 答案與官方參考答案一致\n□ 能具體說明各題評量的能力\n□ 沒有把「題目很長」視為素養命題標準\n□ 已提出適用於本單元的命題技巧\n\n本階段只分析試題，不要產生新題目。", "checklist": ["將結果儲存至記事並轉換為來源「歷屆試題分析結果」", "試題、年度、題號與附件一致", "正確答案與官方參考答案相符", "能清楚說明每題所評量的能力", "沒有把題目篇幅當成素養標準", "至少找出一項可應用在本單元的技巧"]}, {"id": "prompt_3", "num": 3, "title": "Prompt 3｜建立五題素養命題藍圖", "shortTitle": "建立五題素養命題藍圖", "source": "命題任務分析與設定規劃、A01、A02、A03、A05、課本、歷屆試題分析結果", "content": "請先閱讀「A03-四步驟打造素養導向試題」本次上傳的命題方法資料。這份資料以數學為例介紹四步驟；請運用其原理，依國文、英語、社會、自然等學科特性調整。\n\n接下來，請根據我們前面已經建立的：\n\n1. 命題任務分析與設定規劃\n2. A01-官方會考命題原則\n3. A02-素養導向紙筆評量要素\n4. A05-學科課綱\n5. B01-單元內容\n6. 歷屆試題分析結果\n\n規劃 5 題原創素養選擇題的命題藍圖。\n\n【命題方法】\n\n請參考以下四個步驟：\n\n第一步：蒐集並整理情境相關資訊。\n第二步：找出有需求、有目的或涉及迷思的問題。\n第三步：確認問題背後的學科概念與評量能力。\n第四步：選擇適合評量目標的題型。\n\n請依照我「提供的學科資料」的特性調整上述方法。\n\n【命題規模】\n\n共 5 題，每題四選一。\n\n可以是獨立單題，也可以組成共用素材的題組。\n\n【難度模式】\n\n如果我選擇模式 A，建議規劃：\n- 基本理解 1 題\n- 情境應用 2 題\n- 分析或推理 2 題\n\n所有題目必須符合指定年段及已學內容。\n\n如果我選擇模式 B，建議規劃：\n- 知識應用 1 題\n- 分析推理 2 題\n- 多概念或多步驟整合 2 題\n\n以指定單元為核心，可結合國中第四學習階段相關學習內容。\n\n【命題藍圖】\n\n請為每題規劃：\n\n1. 題號\n2. 評量目標\n3. 課綱對應\n4. 預定情境或素材\n5. 題型（單題／題組）\n6. 預期解題歷程\n7. 學生常見迷思\n8. 認知需求及預估難度\n9. 是否仍需蒐集資料\n\n請以表格呈現 5 題藍圖。\n\n【本階段檢核】\n\n最後請檢查：\n□ 五題都有明確的評量目標\n□ 沒有大量重複評量相同概念\n□ 難度符合 A／B 模式\n□ 情境與學科能力有實質關係\n□ 題組之間不會相互洩漏答案\n□ 已列出尚需蒐集的資料\n\n目前只完成命題藍圖，不要產生正式題目。", "checklist": ["將結果儲存至記事並轉換為來源「命題藍圖」", "5 題都有不同且具體的評量目標", "沒有過度集中考相同概念", "難度與 A／B 模式一致", "情境與學科能力確有實質關係", "題目配置沒有互相洩漏答案", "已列出尚待蒐集的素材"]}, {"id": "prompt_4", "num": 4, "title": "Prompt 4｜蒐集與查證命題素材（選配）", "shortTitle": "蒐集與查證命題素材（選配）", "source": "命題藍圖", "content": "請根據「命題藍圖」，協助我蒐集適合的命題素材。\n\n【素材類型】\n\n可以使用：\n- 真實生活情境\n- 政府公開資料\n- 統計數據與圖表\n- 地圖、圖片與實驗資料\n- 新聞或科普文章\n- 合理的學科探究情境\n\n【素材選擇原則】\n\n1. 素材與教學單元直接相關。\n2. 能支持五題命題藍圖的評量目標。\n3. 情境與需要評量的學科能力有實質關聯。\n4. 資料具有可信來源。\n5. 不得編造真實事件、網址或統計數據。\n6. 必要時可以使用模擬資料，但必須明確標示。\n7. 不得為了增加閱讀量而加入無關資訊。\n8. 素材應符合選定的 A／B 命題模式。\n\n【工作任務】\n\n請提出三種適合本單元的命題素材方向。\n\n逐一說明：\n1. 素材名稱\n2. 內容摘要\n3. 原始來源與網址\n4. 適合評量的能力\n5. 可對應的命題藍圖題號\n6. 使用素材時的限制\n7. 尚需人工確認的資料\n\n請以表格比較，並推薦最適合的素材。\n\n【重要限制】\n\n如果無法確認資料來源，請標示待查證。\n\n如果原始素材涉及著作權，請提醒我，不要直接大量複製到後續公開網站。\n\n【本階段檢核】\n\n請確認：\n□ 素材符合教學單元\n□ 資料來源可以查證\n□ 素材能支持命題目標\n□ 符合 A／B 模式\n□ 沒有明顯的事實錯誤\n□ 已區分真實資料與模擬資料\n\n請等待我確認素材後，再進入正式命題。", "checklist": ["素材與指定單元直接相關", "原始來源已由教師查證", "可支援五題的評量目標", "符合選定的 A／B 模式", "數據、圖表與單位無明顯錯誤", "已區分真實與模擬資料並確認引用限制"]}, {"id": "prompt_5", "num": 5, "title": "Prompt 5｜正式產生 5 題原創試題", "shortTitle": "正式產生 5 題原創試題", "source": "全選", "content": "請正式設計 5 題原創素養試題。\n\n【命題依據】\n\n請參考：\n1. 命題任務分析與設定規劃及使用 A／B 模式。\n2. 官方會考命題原則。\n3. 素養導向紙筆評量要素。\n4. 本單元課綱及教學內容。\n5. 歷屆試題分析結果。\n6. 命題藍圖。\n7. 命題素材。\n\n【命題要求】\n\n1. 共 5 題，每題四選一。\n2. 每題只有一個正確答案。\n3. 每題都要有明確的評量目標。\n4. 符合選定的 A／B 難度模式。\n5. 以學科知識的理解、應用、分析及推理為核心。\n6. 可使用獨立單題或共用素材的題組。\n7. 題幹清楚，條件充分。\n8. 錯誤選項合理，能反映學生可能的迷思。\n9. 避免陷阱題、歧義題及無關的冗長情境。\n10. 不直接抄寫或只修改歷屆試題的數字。\n11. 不得擅自改動已查證的資料。\n12. 不得讓某題的答案直接洩漏其他題答案。\n\n【模式限制】\n\n模式 A：\n五題必須符合指定年級及已學習的知識範圍。\n\n模式 B：\n五題可以整合國中第四學習階段的相關概念，但要以指定單元為核心，並註明可能涉及的跨單元知識。\n\n【輸出格式】\n\n第一部分：學生版\n- 評量標題\n- 必要的共用素材\n- 五道完整題目\n- 每題 A、B、C、D 四個選項\n- 不顯示正確答案\n\n第二部分：教師版\n每題提供：\n- 正確答案\n- 詳細解析\n- 四個選項的正誤分析\n- 評量目標\n- 課綱對應\n- 認知需求及預估難度\n- 學生可能的迷思\n- 素材來源\n\n第三部分：命題自我檢查\n請以表格逐題確認：\n\n□ 題目符合指定單元\n□ 符合 A／B 模式\n□ 答案唯一且推理正確\n□ 題幹及選項沒有歧義\n□ 評量目標明確\n□ 題目間沒有重複或互相提示\n\n請輸出完整的 5 題初稿，不要只提供構想。", "checklist": ["將結果儲存至記事並轉換為來源「XX領域素養題」", "完整產生 5 題，每題四選一", "學生版未洩漏答案", "教師版 5 題皆附詳細解析", "教師已獨立作答並確認正解唯一", "題目符合命題藍圖且無明顯互相提示"]}, {"id": "prompt_6", "num": 6, "title": "Prompt 6｜命題審查、修正與定稿", "shortTitle": "命題審查、修正與定稿", "source": "A04、XX領域素養題", "content": "請擔任「國中素養導向評量命題審查助理」，嚴格審查前面完成的 5 題原創試題。先閱讀「A04-選擇題命題原則與不良題範例」，並依據此文件檢核「XX領域素養題」。使用官方資料、先前已確認的課綱與命題設定，以及以下審查表內容進行評估。\n\n【命題品質審查表】\n\n每項指標採三級評分：\n\n2 分：符合要求，有明確證據支持。\n1 分：部分符合，需要修正或補充確認。\n0 分：不符合、存在重大問題，或欠缺足夠證據。\n\n每題最高 20 分。\n\n【審查指標】\n\n01｜課綱適切性\n試題內容與學習表現、學習內容及評量目標是否一致？\n是否存在無法查證的課綱代碼？\n\n02｜命題模式適切性\n是否符合已選定的 A／B 模式？\n模式 A 是否涉及尚未學過的知識？\n模式 B 是否仍在國中第四學習階段範圍內？\n\n03｜素養導向與評量效度\n題目是否真正評量預定的學科能力？\n情境、資料或問題是否具有實質意義？\n是否只是在傳統題目前加上故事？\n\n04｜學科知識與素材正確性\n概念、事實、數據、圖表、單位及引用是否正確？\n解題歷程是否符合學科原理？\n是否有未查證的內容？\n\n05｜答案唯一性\n是否只有一個正確答案？\n正解是否有充分理由？\n是否存在其他合理答案？\n\n06｜干擾選項品質\n三個錯誤選項是否合理？\n是否能反映學生常見迷思或推理錯誤？\n是否有明顯荒謬、過度提示或形式不一致的選項？\n\n07｜題幹與文字品質\n題意是否清楚？\n條件是否完整？\n是否存在歧義、模糊敘述、冗長文字或不必要的否定問法？\n\n08｜公平性與適切性\n是否符合評量對象的閱讀與認知程度？\n是否存在文化、性別、社經背景或其他不必要的偏誤？\n是否需要無關的生活經驗才能作答？\n\n09｜題目獨立性與整體配置\n不同題目是否重複評量相同內容？\n某一題是否透露另一題的答案？\n五題是否涵蓋預定的不同評量目標？\n\n10｜原創性與使用合規\n是否直接抄襲或僅表面改寫歷屆試題？\n素材是否具有必要的來源說明？\n後續公開使用是否有著作權疑慮？\n\n【第一階段：逐題審查】\n\n請針對五道題目，依照上述 10 項指標逐項評估。\n\n請以表格呈現：\n\n- 題號\n- 各項審查分數\n- 總分（20 分）\n- 發現的主要問題\n- 必須修正的內容\n- 是否仍需教師確認\n\n所有分數都必須附有判斷依據。\n\n不能只給分數而不說明原因。\n\n如果資料不足，請標示「待查證」，不要假裝已確認正確。\n\n【第二階段：重大問題檢查】\n\n以下四項列為優先修正項目：\n\n1. 課綱適切性\n2. 命題模式適切性\n3. 學科知識與素材正確性\n4. 答案唯一性\n\n只要其中任何一項未獲得 2 分，就不得建議直接定稿。\n\n其他指標如有 0 分，也必須修正。\n\n請區分：\n- 重大問題\n- 一般修正\n- 文字或格式優化\n\n【第三階段：修正試題】\n\n請先列出每題的修正建議，再產生完整修正版。\n\n修正時必須：\n1. 保留原本的評量目標。\n2. 改善題幹及干擾選項。\n3. 修正事實、概念或答案問題。\n4. 避免產生新的歧義。\n5. 確保修改後的答案與解析同步更新。\n6. 仍然符合 A／B 命題模式。\n\n請重新輸出：\nA. 學生版五題\nB. 教師版五題答案與完整解析\n\n【第四階段：定稿資料】\n\n請整理一份「試題定稿與答案」。\n\n內容必須包括：\n1. 學科、年級、單元、A／B 模式。\n2. 完整的共用素材。\n3. 五題題幹。\n4. 每題四個選項。\n5. 五題正確答案。\n6. 逐題完整解析。\n7. 素材來源及必要備註。\n\n請以容易複製的純文字格式提供，不得省略題目內容。\n\n【第五階段：審查結果與檢核】\n\n最後請確認：\n\n□ 已審查完整 5 題\n□ 十項指標均有評估\n□ 已指出重大問題\n□ 已同步更新修正版答案與解析\n□ 已產生完整「定稿交接資料」\n□ 已整理「單元學習摘要」\n□ 已列出仍需教師人工確認的問題\n\n請提醒我：\n本次 AI 審查只是輔助，正式定稿仍須由學科教師確認。\n\n不要把 AI 自我評分視為正式會考的命題品質認證。", "checklist": ["將結果儲存至記事並轉換為來源「命題審查結果」", "已上傳並確認 A04 官方資料", "五題都按 B04 十項指標審查", "重大問題已修正，正解都可確認", "已由教師或同科同儕實際試答", "B05 五題定稿含完整答案與解析", "B06 單元摘要已整理並可用於遊戲"]}, {"id": "prompt_7", "num": 7, "title": "Prompt 7｜試卷輸出", "shortTitle": "試卷輸出", "source": "命題審查結果", "content": "請將試題及解析分開輸出為：第一單元學生版試卷.docx、第一單元教師版解析.docx", "checklist": ["檢查工作是否生成試卷 Word 檔"]}, {"id": "prompt_8", "num": 8, "title": "Prompt 8｜單元學習摘要", "shortTitle": "單元學習摘要", "source": "命題任務分析與設定規劃", "content": "請從「命題任務分析與設定規劃」中，整理一份簡短的「單元學習摘要」，包含：\n\n- 單元核心概念\n- 三至五個重要學習重點\n- 適合練習的知識或技能\n- 學生常見迷思\n- 年級與 A／B 模式限制", "checklist": ["將結果儲存至記事並轉換為來源「單元學習摘要」"]}, {"id": "prompt_9", "num": 9, "title": "Prompt 9｜使用 Gemini Canvas 製作互動測驗", "shortTitle": "使用 Gemini Canvas 製作互動測驗", "source": "單元學習摘要、XX領域素養題", "content": "請生成提供 Gemini Canvas 使用的提示詞，把已經由教師確認的 5 題原創素養試題，製作成可以實際操作的互動測驗網站。\n\n【網站內容】\n\n請沿用已定稿的：\n1. 任教科目及單元。\n2. 適用年級。\n3. A／B 命題模式。\n4. 完整共用素材。\n5. 5 題題幹與四個選項。\n6. 5 題正確答案。\n7. 5 題詳細解析。\n\n不得自行修改題幹、選項、答案、解析或重要數據。\n\n【網站設計】\n\n網站標題：\n請依據學科與單元，自動產生一個清楚、適合國中學生的名稱。\n\n使用繁體中文。\n\n整體風格簡潔、現代、容易閱讀，適合國中學生。\n\n手機、平板及電腦均可正常操作。\n\n【基本功能】\n\n1. 首頁顯示測驗名稱、單元及適用對象。\n2. 顯示完整的必要共用素材。\n3. 完整呈現五道選擇題。\n4. 每題提供 A、B、C、D 四個選項。\n5. 每題只能選擇一個答案。\n6. 未完成五題不得送出，並提示尚未作答的題號。\n7. 學生按下「送出答案」後才顯示結果。\n8. 每題 20 分，總分 100 分。\n9. 自動計算正確題數及得分。\n10. 逐題顯示答對或答錯。\n11. 顯示正確答案與完整解析。\n12. 提供「重新作答」功能。\n13. 重新作答後必須清除前次選項、得分與解析。\n\n【技術要求】\n\n1. 建立單頁互動網站。\n2. 優先使用前端程式完成。\n3. 不需要登入、資料庫或外部 API。\n4. 不使用付費 AI 功能。\n5. 不收集或儲存學生個人資料。\n6. 不依賴外部網站才能完成答題。\n7. 圖表、公式與文字必須清晰可讀。\n8. 保持手機版的良好操作體驗。", "checklist": ["5 題內容與定稿完全一致", "全對時正確顯示 100 分", "部分答對時分數正確", "未答完 5 題時無法送出", "送出後才出現答案與解析", "重新作答會清除狀態", "手機版文字與選項正常", "第一個測驗網站已獨立保存"]}, {"id": "prompt_11", "num": 11, "title": "Prompt 11｜使用 Gemini Canvas 製作單元學習遊戲", "shortTitle": "使用 Gemini Canvas 製作單元學習遊戲", "source": "單元學習摘要、課本", "content": "請先確認你已取得：\n\n1. 任教科目\n2. 任教年級\n3. 目前教學單元\n4. 單元核心概念\n5. 重要學習內容\n6. A／B 命題模式\n7. 學生常見迷思或學習困難\n\n如果目前對話已有這些資訊，請直接沿用。\n若缺少重要內容，請要求我補充，不要自行編造教材內容。\n\n【你的角色】\n\n你是一位熟悉國中課程、遊戲化學習、教學設計及網頁互動程式開發的專家。\n\n請生成提供 Gemini Canvas 使用的提示詞，以我目前的教學單元為核心，製作一個能讓國中學生實際操作的「互動學習遊戲網站」，網站要有趣好玩，能提升學生的學習動機。\n\n\n【第一部分：分析遊戲的學習目標】\n\n請先根據教學單元內容，確認：\n\n1. 這個單元最重要的核心概念。\n2. 學生需要練習的知識或技能。\n3. 學生可能出現的迷思或錯誤。\n4. 最適合透過遊戲練習的學習內容。\n5. 適合本年級學生的認知需求。\n\n如果選擇模式 A：\n遊戲內容應符合指定年級與目前單元的學習程度，不得要求學生運用尚未教授的概念。\n\n如果選擇模式 B：\n遊戲可以加入跨單元整合與進階推理挑戰，但必須保持在國中第四學習階段的學習範圍內。\n\n【第二部分：決定最適合的遊戲機制】\n\n請根據單元性質，自行選擇最適合的一種主要遊戲玩法。\n\n可以參考：\n- 闖關解謎\n- 知識分類挑戰\n- 配對與排序\n- 情境決策\n- 虛擬實驗\n- 任務冒險\n- 資料分析與推理遊戲\n\n請不要要求我在多種玩法中選擇。\n\n請運用你的教學設計專業，選擇最能幫助學生理解本單元的一種玩法，並簡短說明：\n\n1. 遊戲名稱\n2. 學習目標\n3. 遊戲故事或任務情境\n4. 核心互動方式\n5. 預期學習效果\n\n不要只是將前面的五道選擇題，加上分數、角色或動畫後稱為遊戲。\n\n【第三部分：遊戲內容設計】\n\n請規劃三個逐步進階的學習關卡。\n\n第一關：核心概念\n讓學生認識、辨識或操作本單元的重要知識。\n\n第二關：知識應用\n讓學生在具體情境中，運用相關概念完成任務。\n\n第三關：分析與挑戰\n讓學生透過判斷、推理、整合資訊或解決問題完成挑戰。\n\n每關至少包含一項學生必須主動操作的任務。\n\n互動形式應符合學科特性，可以結合點選、配對、分類、排序、參數操作或情境選擇等方式。\n\n同一款遊戲盡量包含兩種有學習意義的互動形式，但不可為了增加形式而造成操作困難。\n\n【關卡設計原則】\n\n1. 內容必須與單元學習目標直接相關。\n2. 任務規則清楚。\n3. 學生可以自行操作。\n4. 作答或操作結果能得到適當回饋。\n5. 答錯後能獲得提示並重新嘗試。\n6. 避免只是測試記憶力或反應速度。\n7. 不使用未查證的學科資訊。\n8. 遊戲任務、正解及提示必須具備合理的學科依據。\n\n【第四部分：網站功能】\n\n請製作完整的互動遊戲網站，包含：\n\n一、遊戲首頁\n- 遊戲名稱\n- 單元名稱\n- 適用年級\n- 簡短遊戲介紹\n- 開始遊戲按鈕\n\n二、關卡系統\n- 共三個學習關卡\n- 顯示目前關卡\n- 顯示學習任務\n- 清楚的操作說明\n- 完成當前關卡才能進入下一關\n\n三、互動操作\n- 使用學生容易理解的操作方式\n- 手機和電腦都可以玩\n- 所有按鈕都必須有實際功能\n- 若使用拖曳操作，須提供手機可用的替代方式\n- 不依賴複雜設備或特殊權限\n\n四、學習回饋\n- 回答或操作正確時，提供正向回饋\n- 發生錯誤時，提供具體提示\n- 不只顯示「答錯了」\n- 必要時說明相關概念\n- 讓學生可以再次嘗試\n\n五、遊戲成果\n- 顯示完成的關卡\n- 顯示合理的得分或成就\n- 完成三關後顯示過關畫面\n- 提供重新挑戰功能\n- 顯示本次練習的重要學習重點\n\n【第五部分：網站視覺】\n\n請使用：\n\n1. 繁體中文介面。\n2. 適合國中學生的視覺設計。\n3. 活潑但不幼稚的風格。\n4. 清楚的文字、按鈕與操作提示。\n5. 適當的遊戲感與成就感。\n6. 簡潔的畫面與明確的任務引導。\n7. 支援手機、平板及電腦。\n8. 不使用容易造成注意力干擾的過度動畫。\n\n可以使用簡單的圖形、圖示、CSS 或 SVG 建立遊戲視覺。\n\n不需要製作大型 3D 遊戲。\n\n【第六部分：技術限制】\n\n1. 使用 Gemini Canvas 製作可預覽的互動網站。\n2. 優先使用單頁前端程式。\n3. 不需要額外資料庫。\n4. 不需要外部 API。\n5. 不需要付費 AI 功能。\n6. 不需要學生登入。\n7. 不收集學生姓名或其他個人資料。\n8. 不依賴外部服務才能完成主要遊戲流程。\n9. 避免使用有授權疑慮的角色、圖片或音樂。\n10. 保持程式簡潔，方便後續修改。\n\n【最終輸出】\n\n請先簡短說明你選定的遊戲玩法及理由。\n\n完成後請提供：\n\n1. 可操作的遊戲預覽。\n2. 三關學習目標與玩法說明。\n3. 各關正確判斷依據及回饋設計。\n4. 程式功能自我檢查結果。\n5. 教師還需要親自測試的項目。", "checklist": ["已帶入單元學習摘要", "遊戲與目前單元及 A／B 模式一致", "三關皆有明確學習目標", "每關都有實際可操作的互動任務", "遊戲並非 5 題測驗換皮", "正確操作、錯誤操作與提示都有效", "可完成三關並重新挑戰", "學科概念與判斷依據已核對", "手機版也能操作"]}],
+        currentStepIndex: 0,
+        checkedItems: {}, // Key: "prompt_id_index", Value: boolean
+        isCopied: false,
+        copyTimeout: null,
+        isMuted: false,
+        isDark: false,
+        fontSize: 'normal', // 'normal' | 'large'
+        toast: {
+          visible: false,
+          message: '',
+          type: 'success',
+          timer: null
+        },
+
+        initApp() {
+          // Load theme
+          try {
+            const savedTheme = localStorage.getItem('cap_workflow_theme');
+            if (savedTheme !== null) {
+              this.isDark = (savedTheme === 'dark');
+            } else {
+              this.isDark = false;
+            }
+            this.applyTheme();
+
+            const savedChecks = localStorage.getItem('cap_workflow_checks');
+            if (savedChecks) {
+              this.checkedItems = JSON.parse(savedChecks);
+            }
+            const savedMuted = localStorage.getItem('cap_workflow_muted');
+            if (savedMuted !== null) {
+              this.isMuted = JSON.parse(savedMuted);
+            }
+            const savedFontSize = localStorage.getItem('cap_workflow_font_size');
+            if (savedFontSize) {
+              this.fontSize = savedFontSize;
+            }
+          } catch (e) {
+            console.error('讀取 localStorage 失敗', e);
+          }
+        },
+
+        applyTheme() {
+          if (this.isDark) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        },
+
+        toggleTheme() {
+          this.isDark = !this.isDark;
+          this.applyTheme();
+          localStorage.setItem('cap_workflow_theme', this.isDark ? 'dark' : 'light');
+          this.playSound('click');
+        },
+
+        get currentPrompt() {
+          return this.prompts[this.currentStepIndex] || this.prompts[0];
+        },
+
+        get currentPromptSources() {
+          const src = this.currentPrompt.source;
+          if (!src) return ['未指定'];
+          return src.split(/[,、]/).map(s => s.trim()).filter(Boolean);
+        },
+
+        get totalChecklistCount() {
+          return this.prompts.reduce((acc, p) => acc + (p.checklist ? p.checklist.length : 0), 0);
+        },
+
+        get completedCount() {
+          let count = 0;
+          this.prompts.forEach(p => {
+            if (p.checklist) {
+              p.checklist.forEach((_, idx) => {
+                if (this.checkedItems[`${p.id}_${idx}`]) {
+                  count++;
+                }
+              });
+            }
+          });
+          return count;
+        },
+
+        get overallPercentage() {
+          if (this.totalChecklistCount === 0) return 0;
+          return Math.round((this.completedCount / this.totalChecklistCount) * 100);
+        },
+
+        get fontSizeClass() {
+          return this.fontSize === 'large' ? 'text-lg' : 'text-base';
+        },
+
+        playSound(type) {
+          AudioController.play(type, this.isMuted);
+        },
+
+        toggleAudio() {
+          this.isMuted = !this.isMuted;
+          localStorage.setItem('cap_workflow_muted', JSON.stringify(this.isMuted));
+          if (!this.isMuted) {
+            this.playSound('click');
+          }
+        },
+
+        toggleFontSize() {
+          this.fontSize = this.fontSize === 'normal' ? 'large' : 'normal';
+          localStorage.setItem('cap_workflow_font_size', this.fontSize);
+        },
+
+        setStep(index) {
+          if (index >= 0 && index < this.prompts.length) {
+            this.currentStepIndex = index;
+            this.isCopied = false;
+            this.playSound('step');
+            this.scrollToTop();
+          }
+        },
+
+        nextStep() {
+          if (this.currentStepIndex < this.prompts.length - 1) {
+            this.setStep(this.currentStepIndex + 1);
+          }
+        },
+
+        prevStep() {
+          if (this.currentStepIndex > 0) {
+            this.setStep(this.currentStepIndex - 1);
+          }
+        },
+
+        scrollToTop() {
+          const target = document.getElementById('prompt-content-view');
+          if (target && window.innerWidth < 1024) {
+            target.scrollIntoView({ behavior: 'smooth' });
+          }
+        },
+
+        isItemChecked(promptId, itemIndex) {
+          return !!this.checkedItems[`${promptId}_${itemIndex}`];
+        },
+
+        toggleCheckItem(promptId, itemIndex) {
+          const key = `${promptId}_${itemIndex}`;
+          const newVal = !this.checkedItems[key];
+          this.checkedItems[key] = newVal;
+          
+          // Persist
+          localStorage.setItem('cap_workflow_checks', JSON.stringify(this.checkedItems));
+
+          if (newVal) {
+            if (this.isStepCompleted(promptId)) {
+              this.playSound('levelUp');
+              this.showToast('🎉 太棒了！本階段所有檢核項目已全數完成！', 'success');
+            } else {
+              this.playSound('check');
+            }
+          } else {
+            this.playSound('uncheck');
+          }
+        },
+
+        getStepCheckedCount(promptId) {
+          const p = this.prompts.find(item => item.id === promptId);
+          if (!p || !p.checklist) return 0;
+          let count = 0;
+          p.checklist.forEach((_, idx) => {
+            if (this.checkedItems[`${promptId}_${idx}`]) count++;
+          });
+          return count;
+        },
+
+        isStepCompleted(promptId) {
+          const p = this.prompts.find(item => item.id === promptId);
+          if (!p || !p.checklist || p.checklist.length === 0) return false;
+          return this.getStepCheckedCount(promptId) === p.checklist.length;
+        },
+
+        async copyCurrentPrompt() {
+          const content = this.currentPrompt.content;
+          try {
+            await navigator.clipboard.writeText(content);
+            this.isCopied = true;
+            this.playSound('copy');
+            this.showToast('✅ 提示詞已成功複製至剪貼簿！', 'success');
+
+            if (this.copyTimeout) clearTimeout(this.copyTimeout);
+            this.copyTimeout = setTimeout(() => {
+              this.isCopied = false;
+            }, 2500);
+          } catch (err) {
+            console.error('複製失敗：', err);
+            const ta = document.createElement('textarea');
+            ta.value = content;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            this.isCopied = true;
+            this.playSound('copy');
+            this.showToast('✅ 提示詞已成功複製！', 'success');
+          }
+        },
+
+        resetProgress() {
+          if (confirm('確定要重設所有教師檢核勾選紀錄嗎？此動作將清除已儲存的勾選狀態。')) {
+            this.checkedItems = {};
+            localStorage.removeItem('cap_workflow_checks');
+            this.playSound('uncheck');
+            this.showToast('已成功重設所有檢核紀錄', 'info');
+          }
+        },
+
+        showToast(message, type = 'success') {
+          this.toast.message = message;
+          this.toast.type = type;
+          this.toast.visible = true;
+          if (this.toast.timer) clearTimeout(this.toast.timer);
+          this.toast.timer = setTimeout(() => {
+            this.toast.visible = false;
+          }, 2800);
+        }
+      };
+    }
   </script>
 </body>
-
 </html>
